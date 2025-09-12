@@ -13,9 +13,22 @@ const openai = new OpenAI({
 
 // Initialize Pinecone client
 let pineconeIndex;
+let useMockPinecone = false;
 
 const initPinecone = async () => {
   try {
+    // Check if we have valid Pinecone credentials
+    if (!process.env.PINECONE_API_KEY || 
+        process.env.PINECONE_API_KEY === 'your_pinecone_api_key_here' ||
+        !process.env.PINECONE_ENVIRONMENT || 
+        process.env.PINECONE_ENVIRONMENT === 'your_pinecone_environment' ||
+        !process.env.PINECONE_INDEX || 
+        process.env.PINECONE_INDEX === 'smartfarmgh-index') {
+      console.log('Using mock Pinecone service for development');
+      useMockPinecone = true;
+      return;
+    }
+    
     const pinecone = new PineconeClient();
     await pinecone.init({
       environment: process.env.PINECONE_ENVIRONMENT,
@@ -25,6 +38,8 @@ const initPinecone = async () => {
     console.log('Pinecone initialized successfully');
   } catch (error) {
     console.error('Pinecone initialization error:', error);
+    console.log('Falling back to mock Pinecone service');
+    useMockPinecone = true;
   }
 };
 
@@ -80,29 +95,38 @@ router.post('/articles', authenticateToken, isAdmin, async (req, res) => {
       publishedAt: status === 'published' ? new Date() : null
     });
     
-    // Generate embeddings for the article
-    const textToEmbed = `${title} ${summary || ''} ${content}`;
-    const embedding = await generateEmbeddings(textToEmbed);
-    
-    // Store embeddings in Pinecone
-    await pineconeIndex.upsert({
-      vectors: [{
-        id: article.id,
-        values: embedding,
-        metadata: {
-          articleId: article.id,
-          title,
-          tags: tags || [],
-          cropTypes: cropTypes || [],
-          regions: regions || [],
-          language: language || 'en'
-        }
-      }]
-    });
-    
-    // Update article with embedding reference
-    article.vectorEmbedding = { id: article.id };
-    await article.save();
+    // Generate embeddings for the article if Pinecone is available
+    if (!useMockPinecone) {
+      try {
+        const textToEmbed = `${title} ${summary || ''} ${content}`;
+        const embedding = await generateEmbeddings(textToEmbed);
+        
+        // Store embeddings in Pinecone
+        await pineconeIndex.upsert({
+          vectors: [{
+            id: article.id,
+            values: embedding,
+            metadata: {
+              articleId: article.id,
+              title,
+              tags: tags || [],
+              cropTypes: cropTypes || [],
+              regions: regions || [],
+              language: language || 'en'
+            }
+          }]
+        });
+        
+        // Update article with embedding reference
+        article.vectorEmbedding = { id: article.id };
+        await article.save();
+      } catch (error) {
+        console.error('Error storing embeddings in Pinecone:', error);
+        // Continue without vector embeddings
+      }
+    } else {
+      console.log('Skipping vector embedding storage (using mock Pinecone)');
+    }
     
     res.status(201).json({
       success: true,
@@ -259,26 +283,33 @@ router.put('/articles/:id', authenticateToken, isAdmin, async (req, res) => {
     
     await article.save();
     
-    // Update embeddings if content changed
-    if (title || content || summary) {
-      const textToEmbed = `${article.title} ${article.summary || ''} ${article.content}`;
-      const embedding = await generateEmbeddings(textToEmbed);
-      
-      // Update in Pinecone
-      await pineconeIndex.upsert({
-        vectors: [{
-          id: article.id,
-          values: embedding,
-          metadata: {
-            articleId: article.id,
-            title: article.title,
-            tags: article.tags || [],
-            cropTypes: article.cropTypes || [],
+    // Update embeddings if content changed and Pinecone is available
+    if ((title || content || summary) && !useMockPinecone) {
+      try {
+        const textToEmbed = `${article.title} ${article.summary || ''} ${article.content}`;
+        const embedding = await generateEmbeddings(textToEmbed);
+        
+        // Update in Pinecone
+        await pineconeIndex.upsert({
+          vectors: [{
+            id: article.id,
+            values: embedding,
+            metadata: {
+              articleId: article.id,
+              title: article.title,
+              tags: article.tags || [],
+              cropTypes: article.cropTypes || [],
             regions: article.regions || [],
             language: article.language || 'en'
           }
         }]
       });
+      } catch (error) {
+        console.error('Error updating embeddings in Pinecone:', error);
+        // Continue without updating vector embeddings
+      }
+    } else if (title || content || summary) {
+      console.log('Skipping vector embedding update (using mock Pinecone)');
     }
     
     res.json({
@@ -303,11 +334,16 @@ router.delete('/articles/:id', authenticateToken, isAdmin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Article not found' });
     }
     
-    // Delete from Pinecone
-    if (article.vectorEmbedding && article.vectorEmbedding.id) {
-      await pineconeIndex.delete({
-        ids: [article.vectorEmbedding.id]
-      });
+    // Delete from Pinecone if available
+    if (!useMockPinecone && article.vectorEmbedding && article.vectorEmbedding.id) {
+      try {
+        await pineconeIndex.delete({
+          ids: [article.vectorEmbedding.id]
+        });
+      } catch (error) {
+        console.error('Error deleting from Pinecone:', error);
+        // Continue with database deletion even if Pinecone deletion fails
+      }
     }
     
     // Delete from database

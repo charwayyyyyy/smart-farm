@@ -5,29 +5,29 @@ const Hero = () => {
     <section className="bg-white dark:bg-gray-900">
       <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
         <div className="mr-auto place-self-center lg:col-span-7">
-          <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl text-primary dark:text-white">
+          <h1 className="max-w-2xl mb-4 text-3xl font-extrabold tracking-tight leading-none md:text-4xl lg:text-5xl xl:text-6xl text-primary dark:text-white transition-all duration-300">
             Smart Farming Solutions for Ghana
           </h1>
-          <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+          <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 text-base md:text-lg lg:text-xl dark:text-gray-400 transition-all duration-300">
             Access expert farming advice, personalized crop calendars, and agricultural knowledge through AI and SMS technology tailored for Ghanaian farmers.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-            <Link href="/chatbot">
-              <button className="btn-primary inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg">
+            <Link href="/chatbot" className="w-full sm:w-auto">
+              <button className="btn-primary inline-flex items-center justify-center w-full sm:w-auto px-5 py-3 text-base font-medium text-center text-white rounded-lg transition-all duration-300 hover:scale-105">
                 Try AI Assistant
                 <svg className="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                   <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
                 </svg>
               </button>
             </Link>
-            <Link href="/sms-calendar">
-              <button className="btn-secondary inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+            <Link href="/sms-calendar" className="w-full sm:w-auto">
+              <button className="btn-secondary inline-flex items-center justify-center w-full sm:w-auto px-5 py-3 text-base font-medium text-center rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all duration-300 hover:scale-105">
                 SMS Calendar
               </button>
             </Link>
           </div>
         </div>
-        <div className="hidden lg:mt-0 lg:col-span-5 lg:flex relative h-[400px] rounded-lg overflow-hidden">
+        <div className="mt-8 lg:mt-0 lg:col-span-5 lg:flex relative h-[250px] md:h-[300px] lg:h-[400px] rounded-lg overflow-hidden">
           {/* Placeholder for farm image - in production, replace with actual image */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-primary-dark opacity-20"></div>
           <div className="absolute inset-0 flex items-center justify-center text-white text-lg font-bold">

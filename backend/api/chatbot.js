@@ -12,9 +12,22 @@ const openai = new OpenAI({
 
 // Initialize Pinecone client
 let pineconeIndex;
+let useMockPinecone = false;
 
 const initPinecone = async () => {
   try {
+    // Check if we have valid Pinecone credentials
+    if (!process.env.PINECONE_API_KEY || 
+        process.env.PINECONE_API_KEY === 'your_pinecone_api_key_here' ||
+        !process.env.PINECONE_ENVIRONMENT || 
+        process.env.PINECONE_ENVIRONMENT === 'your_pinecone_environment' ||
+        !process.env.PINECONE_INDEX || 
+        process.env.PINECONE_INDEX === 'smartfarmgh-index') {
+      console.log('Using mock Pinecone service for development');
+      useMockPinecone = true;
+      return;
+    }
+    
     const pinecone = new PineconeClient();
     await pinecone.init({
       environment: process.env.PINECONE_ENVIRONMENT,
@@ -24,6 +37,8 @@ const initPinecone = async () => {
     console.log('Pinecone initialized successfully');
   } catch (error) {
     console.error('Pinecone initialization error:', error);
+    console.log('Falling back to mock Pinecone service');
+    useMockPinecone = true;
   }
 };
 
@@ -51,6 +66,32 @@ const generateEmbeddings = async (text) => {
  */
 const searchKnowledgeBase = async (query, limit = 3) => {
   try {
+    if (useMockPinecone) {
+      // Use a simple keyword search as fallback when Pinecone is not available
+      console.log('Using mock search for knowledge base');
+      const keywords = query.toLowerCase().split(' ');
+      
+      // Get all articles from the database
+      const allArticles = await KnowledgeArticle.findAll({
+        attributes: ['id', 'title', 'content', 'summary', 'tags', 'cropTypes', 'regions']
+      });
+      
+      // Simple relevance scoring based on keyword matches
+      const scoredArticles = allArticles.map(article => {
+        const text = `${article.title} ${article.content} ${article.summary} ${article.tags.join(' ')}`.toLowerCase();
+        const score = keywords.reduce((acc, keyword) => {
+          return acc + (text.includes(keyword) ? 1 : 0);
+        }, 0);
+        return { article, score };
+      });
+      
+      // Sort by score and return top matches
+      return scoredArticles
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit)
+        .map(item => item.article);
+    }
+    
     // Generate embeddings for the query
     const queryEmbedding = await generateEmbeddings(query);
     

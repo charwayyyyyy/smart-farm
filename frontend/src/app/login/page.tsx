@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
-import { FaUser, FaLock, FaUserCircle } from 'react-icons/fa';
+import { FaUser, FaLock, FaUserCircle, FaTractor, FaUserTie, FaUserCog } from 'react-icons/fa';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,9 +12,9 @@ export default function Login() {
   
   // Demo login credentials
   const demoUsers = [
-    { role: 'Farmer', email: 'farmer@demo.com', password: 'password123' },
-    { role: 'Extension Officer', email: 'officer@demo.com', password: 'password123' },
-    { role: 'Admin', email: 'admin@demo.com', password: 'password123' }
+    { role: 'Farmer', email: 'farmer@demo.com', password: 'password123', icon: <FaTractor className="mr-2" /> },
+    { role: 'Extension Officer', email: 'officer@demo.com', password: 'password123', icon: <FaUserTie className="mr-2" /> },
+    { role: 'Admin', email: 'admin@demo.com', password: 'password123', icon: <FaUserCog className="mr-2" /> }
   ];
   
   const handleDemoLogin = (demoEmail: string, demoPassword: string) => {
@@ -146,9 +146,9 @@ export default function Login() {
                     key={user.role}
                     type="button"
                     onClick={() => handleDemoLogin(user.email, user.password)}
-                    className="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-all duration-300 hover:shadow-sm"
+                    className="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-all duration-300 hover:shadow-sm hover:scale-105 bg-white dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
                   >
-                    <FaUserCircle className="mr-1" />
+                    {user.icon}
                     {user.role}
                   </button>
                 ))}
