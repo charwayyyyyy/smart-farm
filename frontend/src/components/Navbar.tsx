@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import Logo from './Logo';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,13 +21,7 @@ const Navbar = () => {
   return (
     <nav className={`bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link href="/" className="flex items-center group">
-          <span className="self-center text-2xl font-bold whitespace-nowrap transition-all duration-300 group-hover:text-accent">
-            <span className="text-accent">Smart</span>
-            <span className="text-primary">Farm</span>
-            <span className="text-secondary">GH</span>
-          </span>
-        </Link>
+        <Logo />
         <div className="flex md:order-2 space-x-2">
           <Link href="/login">
             <button type="button" className="btn-primary py-2 px-4 rounded-lg mr-3 md:mr-0 hover:scale-105 transition-transform duration-300 shadow-sm hover:shadow-md">
