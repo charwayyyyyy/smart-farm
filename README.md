@@ -37,7 +37,7 @@ SmartFarmGH is a comprehensive platform designed to empower Ghanaian farmers wit
 - JWT authentication
 
 ### Database
-- PostgreSQL for relational data
+- MongoDB for data storage
 - Pinecone for vector embeddings (AI features)
 
 ### AI Services
@@ -47,6 +47,77 @@ SmartFarmGH is a comprehensive platform designed to empower Ghanaian farmers wit
 
 ### SMS Gateway
 - Twilio for SMS delivery and management
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- MongoDB connection
+
+### Installation
+
+1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/smart-farm.git
+   cd smart-farm
+   ```
+
+2. Install dependencies for both frontend and backend
+   ```
+   # Install frontend dependencies
+   cd frontend
+   npm install
+   cd ..
+
+   # Install backend dependencies
+   cd backend
+   npm install
+   cd ..
+   ```
+
+3. Set up environment variables
+   - Create a `.env` file in the backend directory based on `.env.example`
+   - Add your API keys and database connection strings
+
+### Running the Application
+
+#### Option 1: Using the start script (Windows)
+
+Run both frontend and backend servers with a single command:
+
+```
+./start-servers.ps1
+```
+
+#### Option 2: Manual startup
+
+Start the backend server:
+```
+cd backend
+npm run dev
+```
+
+Start the frontend server (in a new terminal):
+```
+cd frontend
+npm run dev
+```
+
+### Accessing the Application
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
+
+## Demo Accounts
+
+The application includes demo accounts for testing different user roles:
+
+- **Admin**: admin@smartfarmgh.com / password123
+- **Farmer**: farmer@smartfarmgh.com / password123
+- **Expert**: expert@smartfarmgh.com / password123
+- **Supplier**: supplier@smartfarmgh.com / password123
 
 ### Deployment
 - Docker containerization

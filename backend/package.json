@@ -9,18 +9,18 @@
     "test": "jest"
   },
   "dependencies": {
+    "@pinecone-database/pinecone": "^1.1.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.6.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "openai": "^4.20.1",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.35.1",
-    "twilio": "^4.19.0",
-    "openai": "^4.20.1",
-    "@pinecone-database/pinecone": "^1.1.2"
+    "twilio": "^4.19.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
