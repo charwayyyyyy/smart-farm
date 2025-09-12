@@ -22,7 +22,8 @@ export default function Login() {
     setPassword(demoPassword);
     // Auto-submit after a short delay
     setTimeout(() => {
-      handleSubmit(new Event('click') as any);
+      const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+      handleSubmit(fakeEvent);
     }, 500);
   };
   const [error, setError] = useState('');
@@ -53,8 +54,9 @@ export default function Login() {
       
       // Redirect to dashboard
       window.location.href = '/dashboard';
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during login');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred during login';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

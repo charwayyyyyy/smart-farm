@@ -37,6 +37,9 @@ export default function Chatbot() {
     ]);
   }, []);
 
+  // This function would be used in production with a real backend
+  // Currently using handleDemoSubmit for the demo version
+  /*
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -92,6 +95,7 @@ export default function Chatbot() {
       setLoading(false);
     }
   };
+  */
 
   // For demo purposes, simulate API response
   const handleDemoSubmit = (e: React.FormEvent) => {

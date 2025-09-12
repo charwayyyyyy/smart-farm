@@ -7,10 +7,23 @@ const Crop = require('../models/Crop');
 const FarmerSubscription = require('../models/FarmerSubscription');
 
 // Initialize Twilio client
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+let twilioClient;
+try {
+  // Check if Twilio credentials are properly configured
+  if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_ACCOUNT_SID.startsWith('AC')) {
+    console.warn('Warning: Twilio Account SID is missing or invalid. SMS functionality will be disabled.');
+  } else if (!process.env.TWILIO_AUTH_TOKEN) {
+    console.warn('Warning: Twilio Auth Token is missing. SMS functionality will be disabled.');
+  } else {
+    twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+    console.log('Twilio client initialized successfully');
+  }
+} catch (error) {
+  console.error('Failed to initialize Twilio client:', error.message);
+}
 
 // @route   POST /api/sms/register
 // @desc    Register a user via SMS
@@ -51,12 +64,21 @@ router.post('/register', async (req, res) => {
       notificationPreference: 'sms'
     });
 
-    // Send confirmation SMS
-    await twilioClient.messages.create({
-      body: `Thank you for registering with SmartFarmGH! You will now receive updates for ${cropType} farming in ${location}.`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phone
-    });
+    // Send confirmation SMS if Twilio is configured
+    if (twilioClient) {
+      try {
+        await twilioClient.messages.create({
+          body: `Thank you for registering with SmartFarmGH! You will now receive updates for ${cropType} farming in ${location}.`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: phone
+        });
+      } catch (error) {
+        console.error('Failed to send confirmation SMS:', error.message);
+        // Continue with the registration process even if SMS fails
+      }
+    } else {
+      console.log(`SMS would be sent to ${phone}: Thank you for registering with SmartFarmGH! You will now receive updates for ${cropType} farming in ${location}.`);
+    }
 
     res.status(201).json({
       success: true,
@@ -81,12 +103,23 @@ router.post('/send', authenticateToken, isAdmin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found or has no phone number' });
     }
 
-    // Send SMS
-    const smsResponse = await twilioClient.messages.create({
-      body: message,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: user.phone
-    });
+    // Send SMS if Twilio is configured
+    let smsResponse;
+    if (twilioClient) {
+      try {
+        smsResponse = await twilioClient.messages.create({
+          body: message,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: user.phone
+        });
+      } catch (error) {
+        console.error('Failed to send SMS:', error.message);
+        return res.status(500).json({ success: false, message: 'Failed to send SMS', error: error.message });
+      }
+    } else {
+      console.log(`SMS would be sent to ${user.phone}: ${message}`);
+      smsResponse = { sid: 'DEMO_MODE_' + Date.now() };
+    }
 
     res.json({
       success: true,
@@ -123,22 +156,43 @@ router.post('/broadcast', authenticateToken, isAdmin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'No matching subscriptions found' });
     }
 
-    // Send SMS to each subscriber
-    const smsPromises = subscriptions.map(async (subscription) => {
-      if (subscription.User && subscription.User.phone) {
-        return twilioClient.messages.create({
-          body: message,
-          from: process.env.TWILIO_PHONE_NUMBER,
-          to: subscription.User.phone
-        });
-      }
-    });
-
-    await Promise.all(smsPromises.filter(Boolean));
+    // Send SMS to each subscriber if Twilio is configured
+    let sentCount = 0;
+    
+    if (twilioClient) {
+      const smsPromises = subscriptions.map(async (subscription) => {
+        if (subscription.User && subscription.User.phone) {
+          try {
+            const result = await twilioClient.messages.create({
+              body: message,
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: subscription.User.phone
+            });
+            sentCount++;
+            return result;
+          } catch (error) {
+            console.error(`Failed to send SMS to ${subscription.User.phone}:`, error.message);
+            return null;
+          }
+        }
+        return null;
+      });
+      
+      await Promise.all(smsPromises.filter(Boolean));
+    } else {
+      // Log messages that would be sent in demo mode
+      subscriptions.forEach(subscription => {
+        if (subscription.User && subscription.User.phone) {
+          console.log(`SMS would be sent to ${subscription.User.phone}: ${message}`);
+          sentCount++;
+        }
+      });
+    }
 
     res.json({
       success: true,
-      message: `SMS broadcast sent to ${smsPromises.filter(Boolean).length} recipients`
+      message: `SMS broadcast sent to ${sentCount} recipients`,
+      demoMode: !twilioClient
     });
   } catch (error) {
     console.error('SMS broadcast error:', error);
@@ -189,12 +243,20 @@ router.post('/webhook', async (req, res) => {
         });
 
         if (!crop) {
-          // Send error SMS
-          await twilioClient.messages.create({
-            body: `Sorry, we couldn't find crop type "${cropType}". Please try again with a valid crop type.`,
-            from: process.env.TWILIO_PHONE_NUMBER,
-            to: phone
-          });
+          // Send error SMS if Twilio is configured
+          if (twilioClient) {
+            try {
+              await twilioClient.messages.create({
+                body: `Sorry, we couldn't find crop type "${cropType}". Please try again with a valid crop type.`,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                to: phone
+              });
+            } catch (error) {
+              console.error('Failed to send error SMS:', error.message);
+            }
+          } else {
+            console.log(`SMS would be sent to ${phone}: Sorry, we couldn't find crop type "${cropType}". Please try again with a valid crop type.`);
+          }
           return res.status(200).end();
         }
 
@@ -221,36 +283,68 @@ router.post('/webhook', async (req, res) => {
           notificationPreference: 'sms'
         });
 
-        // Send confirmation SMS
-        await twilioClient.messages.create({
-          body: `Thank you for registering with SmartFarmGH! You will now receive updates for ${cropType} farming in ${location}.`,
-          from: process.env.TWILIO_PHONE_NUMBER,
-          to: phone
-        });
+        // Send confirmation SMS if Twilio is configured
+        if (twilioClient) {
+          try {
+            await twilioClient.messages.create({
+              body: `Thank you for registering with SmartFarmGH! You will now receive updates for ${cropType} farming in ${location}.`,
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: phone
+            });
+          } catch (error) {
+            console.error('Failed to send confirmation SMS:', error.message);
+          }
+        } else {
+          console.log(`SMS would be sent to ${phone}: Thank you for registering with SmartFarmGH! You will now receive updates for ${cropType} farming in ${location}.`);
+        }
       } else {
-        // Send error SMS
-        await twilioClient.messages.create({
-          body: 'To register, please use the format: register [crop] [location]. Example: register maize accra',
-          from: process.env.TWILIO_PHONE_NUMBER,
-          to: phone
-        });
+        // Send error SMS if Twilio is configured
+        if (twilioClient) {
+          try {
+            await twilioClient.messages.create({
+              body: 'To register, please use the format: register [crop] [location]. Example: register maize accra',
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: phone
+            });
+          } catch (error) {
+            console.error('Failed to send error SMS:', error.message);
+          }
+        } else {
+          console.log(`SMS would be sent to ${phone}: To register, please use the format: register [crop] [location]. Example: register maize accra`);
+        }
       }
     } else if (message === 'help') {
-      // Send help SMS
-      await twilioClient.messages.create({
-        body: 'SmartFarmGH Commands:\n- register [crop] [location]: Subscribe to crop alerts\n- status: Check your subscriptions\n- help: Show this message',
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: phone
-      });
+      // Send help SMS if Twilio is configured
+      if (twilioClient) {
+        try {
+          await twilioClient.messages.create({
+            body: 'SmartFarmGH Commands:\n- register [crop] [location]: Subscribe to crop alerts\n- status: Check your subscriptions\n- help: Show this message',
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: phone
+          });
+        } catch (error) {
+          console.error('Failed to send help SMS:', error.message);
+        }
+      } else {
+        console.log(`SMS would be sent to ${phone}: SmartFarmGH Commands:\n- register [crop] [location]: Subscribe to crop alerts\n- status: Check your subscriptions\n- help: Show this message`);
+      }
     } else if (message === 'status') {
       // Find user
       const user = await User.findOne({ where: { phone } });
       if (!user) {
-        await twilioClient.messages.create({
-          body: 'You are not registered with SmartFarmGH. Text "register [crop] [location]" to subscribe.',
-          from: process.env.TWILIO_PHONE_NUMBER,
-          to: phone
-        });
+        if (twilioClient) {
+          try {
+            await twilioClient.messages.create({
+              body: 'You are not registered with SmartFarmGH. Text "register [crop] [location]" to subscribe.',
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: phone
+            });
+          } catch (error) {
+            console.error('Failed to send status SMS:', error.message);
+          }
+        } else {
+          console.log(`SMS would be sent to ${phone}: You are not registered with SmartFarmGH. Text "register [crop] [location]" to subscribe.`);
+        }
         return res.status(200).end();
       }
 
@@ -261,29 +355,53 @@ router.post('/webhook', async (req, res) => {
       });
 
       if (subscriptions.length === 0) {
-        await twilioClient.messages.create({
-          body: 'You have no active crop subscriptions. Text "register [crop] [location]" to subscribe.',
-          from: process.env.TWILIO_PHONE_NUMBER,
-          to: phone
-        });
+        if (twilioClient) {
+          try {
+            await twilioClient.messages.create({
+              body: 'You have no active crop subscriptions. Text "register [crop] [location]" to subscribe.',
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: phone
+            });
+          } catch (error) {
+            console.error('Failed to send no subscriptions SMS:', error.message);
+          }
+        } else {
+          console.log(`SMS would be sent to ${phone}: You have no active crop subscriptions. Text "register [crop] [location]" to subscribe.`);
+        }
       } else {
         const subList = subscriptions.map(sub => 
           `- ${sub.Crop.name} in ${sub.location} (planted: ${new Date(sub.plantingDate).toLocaleDateString()})`
         ).join('\n');
         
-        await twilioClient.messages.create({
-          body: `Your SmartFarmGH Subscriptions:\n${subList}`,
-          from: process.env.TWILIO_PHONE_NUMBER,
-          to: phone
-        });
+        if (twilioClient) {
+          try {
+            await twilioClient.messages.create({
+              body: `Your SmartFarmGH Subscriptions:\n${subList}`,
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: phone
+            });
+          } catch (error) {
+            console.error('Failed to send subscriptions list SMS:', error.message);
+          }
+        } else {
+          console.log(`SMS would be sent to ${phone}: Your SmartFarmGH Subscriptions:\n${subList}`);
+        }
       }
     } else {
       // Unknown command
-      await twilioClient.messages.create({
-        body: 'Sorry, I didn\'t understand that command. Text "help" for available commands.',
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: phone
-      });
+      if (twilioClient) {
+        try {
+          await twilioClient.messages.create({
+            body: 'Sorry, I didn\'t understand that command. Text "help" for available commands.',
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: phone
+          });
+        } catch (error) {
+          console.error('Failed to send unknown command SMS:', error.message);
+        }
+      } else {
+        console.log(`SMS would be sent to ${phone}: Sorry, I didn't understand that command. Text "help" for available commands.`);
+      }
     }
 
     res.status(200).end();

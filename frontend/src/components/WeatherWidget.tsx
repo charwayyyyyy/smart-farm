@@ -39,9 +39,9 @@ export default function WeatherWidget({ location = 'Accra, Ghana' }: { location?
         };
         
         setWeather(mockWeatherData);
-      } catch (err: any) {
+      } catch (err) {
         setError('Failed to fetch weather data. Please try again later.');
-        console.error('Weather fetch error:', err);
+        console.error('Weather fetch error:', err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
       }

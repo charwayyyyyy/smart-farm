@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Layout from '@/components/Layout';
-import { FaSearch, FaArrowLeft } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaArrowLeft } from 'react-icons/fa';
 
 type Article = {
   id: string;
@@ -16,549 +16,835 @@ export default function KnowledgeBase() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
-  // Mock categories
   const categories = [
     { id: 'all', name: 'All Categories' },
     { id: 'crops', name: 'Crop Management' },
-    { id: 'soil', name: 'Soil Health' },
-    { id: 'pests', name: 'Pest Control' },
-    { id: 'weather', name: 'Weather Adaptation' },
-    { id: 'market', name: 'Market Access' },
+    { id: 'livestock', name: 'Livestock Care' },
+    { id: 'weather', name: 'Weather & Climate' },
+    { id: 'tech', name: 'Farm Technology' },
+    { id: 'market', name: 'Market Insights' },
   ];
 
-  // Mock articles data
   const articles: Article[] = [
     {
       id: '1',
       title: 'Best Practices for Maize Cultivation in Ghana',
       category: 'crops',
-      summary: 'Learn about optimal planting times, spacing, and care for maize in different Ghanaian regions.',
+      summary: 'Learn about the optimal planting times, soil preparation, and care techniques for maize in different regions of Ghana.',
       content: `# Best Practices for Maize Cultivation in Ghana
 
-Maize is one of Ghana's most important cereal crops, grown across various ecological zones. This guide provides essential information for successful maize cultivation in Ghana.
+Maize is one of Ghana's most important staple crops. This guide provides region-specific advice for maximizing your maize yields.
 
-## Planting Season
+## Optimal Planting Times
 
-The planting season varies by region:
-- **Southern Ghana**: Two seasons - Major (March-April) and Minor (August-September)
-- **Northern Ghana**: One season - May to July
+### Southern Ghana
+- Plant during the major rainy season (March-July)
+- For a second crop, plant during the minor rainy season (September-November)
 
-## Land Preparation
+### Northern Ghana
+- Plant at the onset of the rainy season (May-June)
+- Early maturing varieties are recommended for areas with shorter rainy seasons
+
+## Soil Preparation
 
 1. Clear the land of weeds and debris
-2. Plow to a depth of 20-30cm
-3. Harrow to break soil clumps
-4. Create ridges or mounds in areas prone to waterlogging
+2. Plow to a depth of 20-30 cm
+3. Apply organic matter (compost or well-rotted manure) at 2-3 tons per hectare
+4. For acidic soils (common in high rainfall areas), apply lime at 1-2 tons per hectare
 
 ## Seed Selection
 
-Choose improved varieties suitable for your region:
-- **Obatanpa**: High-yielding, disease-resistant variety suitable for all ecological zones
-- **Mamaba**: Early maturing (80-85 days), good for drought-prone areas
-- **Aburohemaa**: Medium maturing (105-110 days), good for the forest zone
+### Recommended Varieties for Ghana
+- Obatanpa (120 days, high yield, resistant to streak virus)
+- Mamaba (105-110 days, drought tolerant)
+- Aburohemaa (90 days, early maturing)
+- Okomasa (105 days, good for both human and animal consumption)
 
-## Planting
+Choose varieties based on your region's rainfall pattern and the purpose of production.
 
-- **Spacing**: 80cm between rows and 40cm between plants
-- **Depth**: 3-5cm deep
-- **Seeds per hole**: 2-3 seeds, to be thinned to 2 plants per stand
+## Planting Techniques
+
+1. Plant in rows 75 cm apart
+2. Space plants 40 cm within rows
+3. Plant 2-3 seeds per hole at a depth of 3-5 cm
+4. Thin to 1-2 plants per hole after emergence
 
 ## Fertilizer Application
 
-1. **Basal application**: Apply NPK 15-15-15 at 250kg/ha at planting or 1-2 weeks after germination
-2. **Top dressing**: Apply urea at 125kg/ha 4-6 weeks after planting
+### Basal Application (at planting)
+- NPK 15-15-15: 250 kg/ha
 
-## Weed Control
+### Top Dressing (3-4 weeks after emergence)
+- Urea or Ammonium Sulfate: 125 kg/ha
 
-- First weeding: 2-3 weeks after planting
-- Second weeding: 5-6 weeks after planting
-- Consider pre-emergence herbicides like Atrazine for large farms
+Adjust based on soil test results if available.
+
+## Weed Management
+
+1. First weeding: 2-3 weeks after emergence
+2. Second weeding: 5-6 weeks after emergence
+3. Consider herbicides for large-scale farming:
+   - Pre-emergence: Atrazine
+   - Post-emergence: Nicosulfuron
 
 ## Pest and Disease Management
 
 ### Common Pests
-- Stem borers: Apply Cypermethrin or Deltamethrin
-- Fall armyworm: Scout early and apply Emamectin benzoate or Spinetoram
+- Fall Armyworm: Scout regularly, apply approved insecticides when infestation exceeds 20%
+- Stem Borers: Practice crop rotation, early planting, and apply appropriate insecticides
 
 ### Common Diseases
-- Maize streak virus: Use resistant varieties and control leafhoppers
-- Leaf blight: Crop rotation and fungicide application
+- Maize Streak Virus: Use resistant varieties, control leafhoppers
+- Leaf Blight: Crop rotation, fungicide application when necessary
 
 ## Harvesting
 
-Harvest when the husks turn brown and dry, and the kernels are hard. This is typically:
-- 80-90 days for early varieties
-- 105-120 days for medium varieties
-- 120-130 days for late varieties
+1. Harvest when the husks turn brown and dry
+2. For storage, ensure moisture content is below 13%
+3. Dry thoroughly on clean surfaces
 
 ## Storage
 
-1. Dry maize to 12-13% moisture content
-2. Clean storage area thoroughly
-3. Use hermetic bags or silos for storage
-4. Apply appropriate storage pesticides to prevent weevil infestation
+1. Use clean, dry containers or silos
+2. Apply appropriate storage pesticides to prevent weevil infestation
+3. Store in cool, dry places
 
-## Contact for Support
-
-For more information, contact your local agricultural extension officer or the Ministry of Food and Agriculture office in your district.`,
+By following these guidelines and adapting them to your specific local conditions, you can significantly improve your maize yields and quality.`
     },
     {
       id: '2',
-      title: 'Soil Testing and Improvement Methods for Ghanaian Farms',
-      category: 'soil',
-      summary: 'Understand how to test your soil and improve its fertility using both traditional and modern methods.',
-      content: `# Soil Testing and Improvement Methods for Ghanaian Farms
+      title: 'Sustainable Cocoa Farming Techniques',
+      category: 'crops',
+      summary: 'Discover sustainable methods for cocoa cultivation that increase yields while protecting the environment.',
+      content: `# Sustainable Cocoa Farming Techniques
 
-Soil health is fundamental to successful farming. This guide helps Ghanaian farmers understand and improve their soil quality.
+Cocoa is a vital cash crop for many Ghanaian farmers. This guide outlines sustainable practices that can improve your yields while protecting the environment.
 
-## Why Soil Testing Matters
+## Establishing a New Cocoa Farm
 
-Soil testing helps you:
-- Determine nutrient levels and deficiencies
-- Understand soil pH and structure
-- Make informed decisions about fertilizers and amendments
-- Increase crop yields and quality
-- Save money by applying only necessary inputs
+### Site Selection
+- Choose areas with annual rainfall of 1,500-2,000 mm
+- Soil should be deep, well-drained, and rich in organic matter
+- Avoid waterlogged areas and steep slopes
 
-## Simple Soil Testing Methods
+### Land Preparation
+1. Clear undergrowth while maintaining some forest trees for shade
+2. Maintain 40-50% shade for young cocoa
+3. Avoid complete deforestation to preserve biodiversity
 
-### Visual Assessment
-1. Observe soil color: Dark soils often indicate higher organic matter
-2. Check soil structure: Crumbly soil with visible pores is healthier than compacted soil
-3. Look for earthworms and other soil organisms
+## Planting Material
 
-### Jar Test for Soil Composition
-1. Fill a clear jar 1/3 full with soil
-2. Add water until the jar is almost full
-3. Add a teaspoon of salt to help particles separate
-4. Shake vigorously and let settle for 24 hours
-5. Observe layers: sand (bottom), silt (middle), clay (top)
+### Recommended Varieties
+- Hybrid varieties from Cocoa Research Institute of Ghana (CRIG)
+- Look for varieties with:
+  - High yield potential
+  - Disease resistance (especially black pod and swollen shoot)
+  - Early bearing (2-3 years)
 
-### pH Testing
-1. Purchase simple pH test kits from agricultural supply stores
-2. Follow kit instructions to determine if your soil is acidic, neutral, or alkaline
-3. Most crops prefer a pH between 6.0-7.0
+### Nursery Practices
+1. Use fresh, healthy pods from approved sources
+2. Plant seeds in polybags filled with topsoil mixed with organic matter
+3. Provide partial shade for nurseries
+4. Water regularly but avoid waterlogging
 
-## Professional Soil Testing
+## Field Planting
 
-For comprehensive results, send samples to:
-- Soil Research Institute in Kumasi
-- University of Ghana Soil Science Department
-- Regional agricultural offices with soil testing facilities
+1. Plant at the beginning of the rainy season
+2. Space plants 3m x 3m (approximately 1,111 plants per hectare)
+3. Dig planting holes 40cm x 40cm x 40cm
+4. Add organic matter to planting holes
+5. Provide temporary shade using plantain or banana
 
-## Soil Improvement Methods
+## Sustainable Soil Management
 
-### For Acidic Soils (Low pH)
-- Apply agricultural lime (calcium carbonate)
-- Incorporate wood ash from cooking fires
-- Use dolomitic lime for magnesium deficiency
+### Organic Matter Management
+- Apply compost or well-rotted manure annually
+- Practice mulching to conserve moisture and suppress weeds
+- Maintain leaf litter on the farm floor
 
-### For Alkaline Soils (High pH)
-- Add organic matter like compost and manure
-- Apply elemental sulfur
-- Use acidifying fertilizers like ammonium sulfate
+### Cover Cropping
+- Plant leguminous cover crops between young cocoa
+- Recommended species: Calopogonium, Centrosema, Pueraria
 
-### Improving Soil Structure
-1. **Add organic matter**:
-   - Compost
-   - Well-rotted manure
-   - Green manures/cover crops
+### Fertilizer Application
+- Apply based on soil test results when possible
+- Standard recommendation: 370 kg/ha of cocoa-specific fertilizer
+- Split application twice per year
 
-2. **Practice crop rotation**:
-   - Include legumes to fix nitrogen
-   - Alternate deep and shallow-rooted crops
+## Integrated Pest Management
 
-3. **Minimize tillage** to preserve soil structure
+### Cultural Practices
+1. Regular pruning to improve air circulation
+2. Remove diseased pods and plant material
+3. Maintain farm sanitation
 
-4. **Use mulch** to protect soil surface
+### Biological Control
+- Encourage natural enemies of cocoa pests
+- Maintain biodiversity on the farm
 
-### Traditional Ghanaian Soil Improvement Methods
+### Chemical Control (as last resort)
+- Use only approved pesticides
+- Follow recommended dosages and safety precautions
+- Observe pre-harvest intervals
 
-1. **Charcoal dust (Biochar)**:
-   - Incorporate charcoal dust from cooking into soil
-   - Improves water retention and nutrient holding capacity
+## Shade Management
 
-2. **Mixed cropping**:
-   - Traditional practice of growing multiple crops together
-   - Improves soil health and reduces pest pressure
+### Benefits of Proper Shade
+- Reduces heat stress on cocoa trees
+- Creates microclimate favorable for cocoa growth
+- Provides additional income (timber, fruits)
+- Enhances biodiversity
 
-3. **Mounding and ridging**:
-   - Creates microenvironments for different crops
-   - Helps with water management
+### Recommended Shade Trees
+- Timber species: Terminalia, Albizia, Milicia
+- Fruit trees: Avocado, Mango, Citrus
 
-## Recommended Organic Amendments
+## Harvesting and Post-Harvest Handling
 
-1. **Compost**: Apply 2-3 tons per hectare
-2. **Poultry manure**: Apply 5-10 tons per hectare
-3. **Cow manure**: Apply 10-20 tons per hectare
-4. **Green manure**: Grow cover crops like mucuna or canavalia
+1. Harvest only fully ripe pods (yellow or orange color)
+2. Use sharp tools to avoid damaging the tree
+3. Break pods carefully to avoid damaging beans
+4. Ferment beans for 5-7 days, turning regularly
+5. Dry beans in the sun on raised platforms until moisture content reaches 7-8%
 
-## Contact for Support
+## Certification Opportunities
 
-For soil testing assistance, contact your district agricultural development unit or the Soil Research Institute in Kumasi.`,
+Consider joining certification programs such as:
+- Rainforest Alliance
+- UTZ Certified
+- Fairtrade
+
+These can provide access to premium markets and better prices for your cocoa.
+
+By implementing these sustainable practices, you can improve your cocoa yields and quality while contributing to environmental conservation and securing the future of cocoa farming in Ghana.`
     },
     {
       id: '3',
-      title: 'Integrated Pest Management for Vegetable Farms',
-      category: 'pests',
-      summary: 'Learn eco-friendly and effective methods to manage pests in vegetable production.',
-      content: `# Integrated Pest Management for Vegetable Farms in Ghana
+      title: 'Effective Poultry Management for Small-Scale Farmers',
+      category: 'livestock',
+      summary: 'A comprehensive guide to raising healthy and productive poultry on a small-scale farm in Ghana.',
+      content: `# Effective Poultry Management for Small-Scale Farmers
 
-Integrated Pest Management (IPM) combines multiple strategies to control pests while minimizing environmental impact and reducing reliance on chemical pesticides.
+Poultry farming offers one of the quickest returns on investment in livestock farming. This guide provides practical advice for small-scale poultry farmers in Ghana.
 
-## Principles of IPM
+## Getting Started
 
-1. **Prevention**: Use resistant varieties and cultural practices to prevent pest problems
-2. **Monitoring**: Regularly check crops for pests and beneficial insects
-3. **Decision-making**: Establish action thresholds before applying controls
-4. **Intervention**: Use the least harmful method first
-5. **Evaluation**: Assess the effectiveness of your pest management strategies
+### Choosing the Right Poultry Type
+- Layers: For egg production (18-24 months productive life)
+- Broilers: For meat production (6-8 weeks to market weight)
+- Dual-purpose breeds: For both eggs and meat
+- Local breeds: More disease resistant but lower production
 
-## Common Vegetable Pests in Ghana
+### Housing Requirements
 
-### Aphids
-- **Identification**: Small, soft-bodied insects that cluster on new growth
-- **Damage**: Suck plant sap, transmit viruses, cause leaf curling
-- **Control**: Neem oil spray, insecticidal soap, encourage ladybugs and lacewings
+1. Location: Well-drained area, away from residential zones
+2. Space requirements:
+   - Layers: 4-5 birds per square meter
+   - Broilers: 8-10 birds per square meter
+3. Ventilation: Adequate airflow without direct drafts
+4. Protection: Secure from predators and wild birds
 
-### Whiteflies
-- **Identification**: Tiny white flying insects on leaf undersides
-- **Damage**: Suck plant sap, transmit viruses, excrete honeydew
-- **Control**: Yellow sticky traps, neem oil, insecticidal soap
+## Housing Designs
 
-### Tomato Fruitworm
-- **Identification**: Green to brown caterpillars with light stripes
-- **Damage**: Bore into fruits, especially tomatoes and peppers
-- **Control**: Bacillus thuringiensis (Bt) spray, pheromone traps
+### Deep Litter System
+- Floor covered with 5-10 cm of absorbent material (wood shavings, rice husks)
+- Benefits: Good insulation, converts droppings to compost
+- Management: Replace wet litter, turn regularly
 
-### Diamondback Moth
-- **Identification**: Small caterpillars that wriggle backward when disturbed
-- **Damage**: Create holes in cabbage, kale, and other brassicas
-- **Control**: Bt spray, crop rotation, row covers
+### Battery Cage System
+- Wire cages arranged in tiers
+- Benefits: Higher stocking density, cleaner eggs, easier management
+- Considerations: Higher initial cost, welfare concerns
 
-## Cultural Control Methods
+## Feeding Management
 
-1. **Crop rotation**: Don't plant the same family of vegetables in the same location year after year
-2. **Sanitation**: Remove crop residues that may harbor pests
-3. **Timing**: Adjust planting dates to avoid peak pest periods
-4. **Trap crops**: Plant attractive crops to lure pests away from main crops
-5. **Intercropping**: Mix crops to confuse pests and attract beneficial insects
+### Nutritional Requirements
 
-## Physical Control Methods
+#### Layers
+- Chick starter: 0-8 weeks (20-22% protein)
+- Grower mash: 9-20 weeks (16-18% protein)
+- Layer mash: 21+ weeks (16-18% protein with 3.5-4% calcium)
 
-1. **Handpicking**: Remove larger pests by hand
-2. **Traps**: Use sticky traps, pheromone traps, or light traps
-3. **Barriers**: Use row covers, nets, or screens
-4. **Mulching**: Apply reflective mulch to repel certain insects
+#### Broilers
+- Starter: 0-3 weeks (22-24% protein)
+- Finisher: 4+ weeks (20-22% protein)
 
-## Biological Control Methods
+### Water Requirements
+- Clean, fresh water available at all times
+- Water consumption approximately doubles feed consumption
 
-1. **Beneficial insects**: Encourage ladybugs, lacewings, and predatory wasps
-2. **Microbial products**: Use Bt, nematodes, or fungi that target specific pests
-3. **Botanical insecticides**: Apply neem, pyrethrum, or garlic-based sprays
+## Health Management
 
-## Traditional Ghanaian Pest Control Methods
+### Vaccination Schedule
 
-1. **Pepper spray**: Blend hot peppers with water and spray on plants
-2. **Wood ash**: Sprinkle around plants to deter soft-bodied insects
-3. **Neem leaves**: Crush and soak in water overnight, then strain and spray
-4. **Marigold intercropping**: Plant marigolds among vegetables to repel nematodes
+1. Day 1: Marek's disease (hatchery)
+2. Day 7: Newcastle disease (eye drop/drinking water)
+3. Day 14: Gumboro disease (drinking water)
+4. Day 21: Newcastle disease booster
+5. Week 8: Fowl pox (wing web)
+6. Week 16: Newcastle disease + Infectious bronchitis
 
-## Chemical Control (Last Resort)
+Adjust based on local disease prevalence and veterinary advice.
 
-If other methods fail, choose the least toxic pesticide that targets your specific pest:
+### Biosecurity Measures
 
-1. Always read and follow label instructions
-2. Apply at the correct time and dosage
-3. Observe pre-harvest intervals
-4. Rotate pesticides to prevent resistance
-5. Protect yourself with appropriate gear
+1. Restrict visitor access to poultry houses
+2. Use footbaths with disinfectant at entrances
+3. Change clothes and footwear before entering poultry areas
+4. Quarantine new birds for 2-3 weeks
+5. Proper disposal of dead birds (burial or incineration)
+
+## Production Management
+
+### Layers
+- Begin laying at 18-22 weeks of age
+- Peak production at 30-35 weeks
+- Expect 250-300 eggs per hen in the first year
+- Provide 16 hours of light for optimal production
+
+### Broilers
+- Reach 1.8-2.5 kg in 6-8 weeks
+- Monitor weight weekly
+- Adjust feed and environment to optimize growth
 
 ## Record Keeping
 
-Maintain records of:
-- Pest observations
-- Control methods used
-- Results achieved
-- Costs incurred
+Maintain daily records of:
+1. Feed consumption
+2. Water consumption
+3. Egg production/collection
+4. Mortality
+5. Medications and vaccinations
+6. Temperature and humidity
 
-This information will help improve your pest management strategies over time.
+## Marketing Strategies
 
-## Contact for Support
+### Eggs
+- Grade by size and quality
+- Develop relationships with local retailers
+- Consider direct marketing to consumers
+- Explore hotel and restaurant supply
 
-For IPM assistance, contact your local agricultural extension officer or the Plant Protection and Regulatory Services Directorate (PPRSD).`,
+### Meat Birds
+- Develop relationships with processors
+- Consider on-farm processing for direct sales
+- Target special occasions (holidays, festivals)
+
+## Common Challenges and Solutions
+
+### Disease Outbreaks
+- Prevention through biosecurity and vaccination
+- Early detection through daily observation
+- Prompt treatment under veterinary guidance
+
+### Predators
+- Secure housing with proper fencing
+- Night lighting to deter nocturnal predators
+- Regular inspection of enclosures for breaches
+
+### Market Fluctuations
+- Diversify customer base
+- Consider value-added products
+- Form or join producer cooperatives
+
+By implementing these management practices, small-scale poultry farmers in Ghana can improve productivity, reduce losses, and increase profitability.`
     },
     {
       id: '4',
-      title: 'Weather Patterns and Climate-Smart Farming in Ghana',
+      title: 'Weather Adaptation Strategies for Ghanaian Farmers',
       category: 'weather',
-      summary: 'Understand Ghana\'s changing weather patterns and learn adaptation strategies for your farm.',
-      content: `# Weather Patterns and Climate-Smart Farming in Ghana
+      summary: 'Practical approaches to adapt farming practices to Ghana\'s changing climate patterns.',
+      content: `# Weather Adaptation Strategies for Ghanaian Farmers
 
-Ghana's climate is changing, with more unpredictable rainfall, higher temperatures, and more extreme weather events. This guide helps farmers understand and adapt to these changes.
+Changing weather patterns are affecting farming across Ghana. This guide provides practical strategies to adapt your farming practices to these changes.
 
-## Ghana's Climate Zones
+## Understanding Ghana's Climate Zones
 
-1. **Coastal Savannah**: Warm with two rainy seasons, but generally drier than other zones
-2. **Forest Zone**: Humid with two distinct rainy seasons
-3. **Transition Zone**: Between forest and northern savannah, with gradually reducing rainfall
-4. **Northern Savannah**: Single rainy season from May to October
+Ghana has several distinct climate zones, each experiencing different changes:
+
+1. **Coastal Zone**: Experiencing more erratic rainfall and sea level rise
+2. **Forest Zone**: Seeing shifts in rainfall patterns and shorter dry seasons
+3. **Transition Zone**: Facing increased variability in onset of rains
+4. **Northern Savannah**: Dealing with longer dry spells and more intense rainfall events
 
 ## Changing Weather Patterns
 
 ### Rainfall Changes
 - Later onset of rainy seasons
-- More intense rainfall events
-- Longer dry spells during growing seasons
-- Overall reduction in predictability
+- More frequent dry spells during growing seasons
+- Higher intensity rainfall events causing flooding
+- Earlier cessation of rains in many areas
 
 ### Temperature Changes
 - Increasing average temperatures
-- More extremely hot days
-- Higher nighttime temperatures
-- Extended heat waves
+- More frequent extreme heat days
+- Higher evaporation rates
+- Longer and more severe dry seasons
 
 ## Weather Monitoring Tools for Farmers
 
-1. **Rain gauges**: Simple tools to measure rainfall on your farm
-2. **Mobile apps**: Esoko, Farmerline, and Ghana Meteorological Agency apps
-3. **Community monitoring**: Participate in local weather monitoring networks
-4. **Traditional indicators**: Learn to read natural signs (animal behavior, cloud patterns)
+### Traditional Knowledge
+- Observe natural indicators (bird migrations, flowering patterns)
+- Document and share local weather patterns
+
+### Modern Tools
+- Weather apps: Esoko, Farmerline, Ignitia
+- Join farmer WhatsApp groups for weather alerts
+- Radio weather forecasts
+- Ghana Meteorological Agency SMS services
 
 ## Climate-Smart Farming Practices
 
 ### Water Management
 
-1. **Rainwater harvesting**:
-   - Construct small ponds or reservoirs
-   - Use rooftop collection systems
-   - Build contour bunds to slow water flow
+#### Water Conservation
+1. Construct water harvesting structures (ponds, dams)
+2. Use mulching to reduce evaporation
+3. Implement contour bunding on sloped land
+4. Adopt micro-irrigation techniques where possible
 
-2. **Irrigation efficiency**:
-   - Drip irrigation for vegetables
-   - Clay pot irrigation for small plots
-   - Watering in early morning or evening
-
-3. **Soil moisture conservation**:
-   - Mulching with crop residues
-   - Minimum tillage
-   - Cover cropping
+#### Flood Management
+1. Create drainage channels around fields
+2. Plant cover crops to improve soil structure
+3. Construct raised beds for flood-prone areas
+4. Plant trees to reduce runoff
 
 ### Crop Selection and Management
 
-1. **Drought-tolerant varieties**:
-   - Early-maturing maize varieties
-   - Drought-resistant cassava
-   - Improved cowpea varieties
+#### Drought-Tolerant Varieties
+- Maize: Obatanpa, Aburohemaa
+- Rice: AGRA Rice, Jasmine 85
+- Cassava: Ampong, Sika bankye
+- Cowpea: Songotra, Padi-tuya
 
-2. **Diversification**:
-   - Grow multiple crop types
-   - Mix crop varieties with different maturity dates
-   - Integrate crops and livestock
+#### Diversification
+1. Intercropping compatible crops
+2. Rotating crops to spread risk
+3. Integrating tree crops for additional income
+4. Mixed farming (crops and livestock)
 
-3. **Adjusted planting calendar**:
-   - Staggered planting dates
-   - Use seasonal forecasts to time planting
-   - Consider dry season farming with irrigation
+#### Adjusted Planting Calendars
+1. Staggered planting dates
+2. Use of early maturing varieties
+3. Relay cropping to maximize growing season
 
 ### Soil Management
 
-1. **Erosion control**:
-   - Contour farming on slopes
-   - Vetiver grass barriers
-   - Stone bunds
+#### Erosion Control
+1. Contour plowing
+2. Terracing on steep slopes
+3. Planting vegetation barriers
+4. Minimum tillage practices
 
-2. **Organic matter addition**:
-   - Compost application
-   - Green manures
-   - Crop residue retention
+#### Soil Health Improvement
+1. Incorporate organic matter
+2. Practice crop rotation
+3. Use green manures and cover crops
+4. Apply compost and manure
 
-## Traditional Weather Adaptation Strategies
+## Insurance and Financial Protection
 
-1. **Mixed cropping systems**: Traditional polycultures that spread risk
-2. **Indigenous knowledge**: Local indicators for weather prediction
-3. **Seed preservation**: Maintaining diverse local varieties
-4. **Spiritual practices**: Traditional ceremonies related to rainfall
+### Weather Index Insurance
+- Programs available through GAIP (Ghana Agricultural Insurance Pool)
+- Coverage for drought, excess rainfall, and other weather events
+- Often bundled with input purchases
 
-## Weather Insurance and Financial Tools
+### Savings and Credit Groups
+- Village Savings and Loans Associations
+- Farmer-based organizations
+- Mobile money savings platforms
 
-1. **Index-based insurance**: Coverage based on rainfall or temperature triggers
-2. **Savings groups**: Community funds for weather emergencies
-3. **Flexible credit**: Loans with weather-dependent repayment terms
+## Community-Based Adaptation
 
-## Early Warning Systems
+### Knowledge Sharing
+1. Farmer field schools
+2. Community early warning systems
+3. Demonstration farms
 
-1. Register for SMS weather alerts from Ghana Meteorological Agency
-2. Join farmer groups that share weather information
-3. Listen to radio programs with seasonal forecasts
+### Resource Pooling
+1. Shared irrigation systems
+2. Community seed banks
+3. Group purchasing of inputs
+4. Collective marketing
 
-## Contact for Support
+## Government and NGO Support Programs
 
-For climate-smart farming assistance, contact your district agricultural development unit or the Climate Change Agriculture and Food Security (CCAFS) program.`,
+### Available Resources
+- Ministry of Food and Agriculture extension services
+- Planting for Food and Jobs program
+- One Village One Dam initiative
+- NGO climate adaptation projects
+
+### How to Access
+1. Register with local agricultural office
+2. Join farmer-based organizations
+3. Participate in community meetings
+4. Monitor radio announcements
+
+By implementing these adaptation strategies, Ghanaian farmers can build resilience to changing weather patterns and maintain productive farming operations despite climate challenges.`
     },
     {
       id: '5',
-      title: 'Accessing Agricultural Markets in Ghana',
-      category: 'market',
-      summary: 'Strategies for small-scale farmers to improve market access and get better prices for their produce.',
-      content: `# Accessing Agricultural Markets in Ghana
+      title: 'Smart Irrigation Systems for Small-Scale Farms',
+      category: 'tech',
+      summary: 'Affordable and efficient irrigation technologies that can help small-scale farmers optimize water usage.',
+      content: `# Smart Irrigation Systems for Small-Scale Farms
 
-Successful farming isn't just about production—it's also about effectively marketing your produce. This guide provides strategies for Ghanaian farmers to improve market access and profitability.
+Efficient irrigation is becoming increasingly important as rainfall patterns change and water resources become scarcer. This guide explores affordable smart irrigation options for small-scale farmers in Ghana.
 
-## Understanding Market Types
+## Benefits of Smart Irrigation
 
-### Local Markets
-- **Village markets**: Weekly markets in rural communities
-- **District markets**: Larger markets in district capitals
-- **Urban markets**: Major city markets like Makola (Accra) or Kejetia (Kumasi)
+1. Water conservation (30-50% reduction compared to traditional methods)
+2. Reduced labor requirements
+3. Improved crop yields and quality
+4. Decreased fertilizer leaching
+5. Lower energy costs for pumping
 
-### Institutional Buyers
-- Schools (School Feeding Program)
-- Hospitals
-- Hotels and restaurants
-- Processing companies
+## Assessing Your Water Resources
 
-### Export Markets
-- Regional markets (ECOWAS countries)
-- International markets (EU, US, Asia)
+### Water Source Evaluation
+- Surface water (rivers, lakes, dams)
+- Groundwater (wells, boreholes)
+- Harvested rainwater
+- Municipal water (where available)
 
-## Market Requirements
+### Water Quality Considerations
+1. Salinity levels
+2. Sediment content
+3. Biological contaminants
+4. Chemical pollutants
 
-### Quality Standards
-1. **Size and appearance**: Uniform, undamaged produce
-2. **Maturity**: Properly ripened but firm
-3. **Cleanliness**: Free from dirt, pests, and chemical residues
-4. **Packaging**: Appropriate containers that prevent damage
+## Low-Cost Smart Irrigation Options
 
-### Quantity Requirements
-1. **Consistency**: Regular supply throughout the season
-2. **Volume**: Minimum quantities for different buyers
-3. **Timing**: Delivery according to agreed schedules
+### Drip Irrigation Systems
 
-### Documentation (especially for export)
-1. **Food safety certification**: GlobalGAP, Organic, Fair Trade
-2. **Business registration**: Legal entity status
-3. **Tax identification**: TIN number
+#### Components
+- Header tank or water source
+- Main line and sub-main pipes
+- Drip laterals with emitters
+- Filters and pressure regulators
 
-## Market Information Sources
+#### Implementation
+1. Basic gravity-fed systems cost GHS 2,000-5,000 per acre
+2. Can be installed incrementally to spread costs
+3. Locally available materials can reduce costs
 
-1. **Mobile services**:
-   - Esoko market information
-   - Farmerline Mergdata
-   - mFarms platform
+### Affordable Soil Moisture Sensors
 
-2. **Radio programs**:
-   - Farm Radio programs with market prices
-   - Agricultural extension broadcasts
+#### Types
+- Gypsum blocks (GHS 50-150 each)
+- Tensiometers (GHS 200-500 each)
+- Low-cost electronic sensors (GHS 100-300)
 
-3. **Government sources**:
-   - Ministry of Food and Agriculture market bulletins
-   - Ghana Export Promotion Authority
+#### Usage
+1. Place at different depths in root zone
+2. Check readings before irrigation
+3. Develop irrigation schedule based on readings
 
-4. **Farmer organizations**:
-   - FBO market information sharing
-   - Cooperative market intelligence
+### Solar-Powered Pumping Systems
 
-## Improving Market Access
+#### Components
+- Solar panels (200-500W)
+- DC pump or AC pump with inverter
+- Controller and mounting structure
+- Storage tank for buffer
 
-### Group Marketing
-1. **Form or join farmer groups**:
-   - Pool produce to meet volume requirements
-   - Share transportation costs
-   - Increase bargaining power
+#### Costs and Benefits
+1. Initial investment: GHS 3,000-10,000
+2. No ongoing fuel costs
+3. Low maintenance requirements
+4. 5-10 year lifespan for quality systems
 
-2. **Establish collection centers**:
-   - Central locations for aggregation
-   - Quality checking and sorting
-   - Buyer meeting points
+## Mobile Phone Integration
 
-### Value Addition
-1. **Simple processing**:
-   - Drying (solar driers for fruits and vegetables)
-   - Milling (grains into flour)
-   - Packaging (smaller consumer units)
+### SMS-Based Systems
 
-2. **Storage**:
-   - Improved storage facilities (PICS bags, silos)
-   - Cold storage for perishables
-   - Warehouse receipt systems
+1. Weather forecast integration
+2. Irrigation scheduling reminders
+3. Simple on/off control via SMS
 
-### Direct Marketing
-1. **Farm gate sales**:
-   - Roadside stands
-   - Pick-your-own operations
-   - Farm shops
+### Smartphone Applications
 
-2. **Urban direct marketing**:
-   - Farmers' markets
-   - Home delivery services
-   - Social media marketing
+1. Farmerline and Esoko platforms
+2. Irrigation calculators
+3. Crop water requirement estimators
 
-### Contract Farming
-1. **Outgrower schemes**:
-   - Production contracts with processors
-   - Input provision and technical support
-   - Guaranteed markets
+## DIY Smart Irrigation Controllers
 
-2. **Forward contracts**:
-   - Pre-arranged sales agreements
-   - Fixed or formula pricing
-   - Delivery schedules
+### Timer-Based Systems
 
-## Digital Marketing Tools
+1. Simple mechanical timers (GHS 50-200)
+2. Digital timers with multiple programs (GHS 200-500)
+3. Integration with solenoid valves for zone control
 
-1. **WhatsApp business groups**:
-   - Create farmer-buyer networks
-   - Share product availability
-   - Negotiate prices
+### Arduino-Based Controllers
 
-2. **Facebook marketplace**:
-   - List products with photos
-   - Reach urban consumers
-   - Build a farm brand
+1. Basic components needed:
+   - Arduino board (GHS 100-200)
+   - Relay modules (GHS 50-100)
+   - Soil moisture sensors (GHS 50-150)
+   - Plastic enclosure and wiring
 
-3. **E-commerce platforms**:
-   - Agrocenta
-   - Trotro Tractor
-   - AgroCenta
+2. Free open-source code available online
+3. Can be expanded with additional sensors
 
-## Transportation Solutions
+## Implementation Steps
 
-1. **Shared transport**:
-   - Group hiring of vehicles
-   - Coordinated delivery schedules
+### Planning Your System
 
-2. **Mobile apps**:
-   - Truck hiring platforms
-   - Logistics coordination services
+1. Map your farm and identify irrigation zones
+2. Calculate water requirements for each crop
+3. Assess available water pressure and flow rate
+4. Design system layout with expansion in mind
 
-3. **Improved packaging**:
-   - Stackable crates
-   - Cushioning materials
-   - Ventilated containers
+### Phased Implementation
 
-## Financial Services for Marketing
+1. Start with high-value crops
+2. Begin with basic drip system
+3. Add sensors and automation incrementally
+4. Expand to additional areas as budget allows
 
-1. **Inventory credit**:
-   - Loans using stored produce as collateral
-   - Allows waiting for better prices
+### Maintenance Requirements
 
-2. **Mobile money**:
-   - Secure payment methods
-   - Reduced cash handling risks
+1. Regular filter cleaning (daily to weekly)
+2. System flushing (monthly)
+3. Emitter inspection and cleaning (monthly)
+4. Sensor calibration (seasonally)
 
-3. **Savings for marketing**:
-   - Village Savings and Loans Associations
-   - Marketing funds
+## Funding and Support Options
 
-## Contact for Support
+### Microfinance and Loans
+- Agricultural Development Bank programs
+- Microfinance institutions with agricultural focus
+- MASLOC small business loans
 
-For market access assistance, contact your district agricultural marketing officer or the Ghana Export Promotion Authority.`,
+### Group Purchasing
+- Farmer-based organizations
+- Cooperative buying to reduce costs
+- Shared systems for neighboring small farms
+
+### NGO and Government Support
+- Ministry of Food and Agriculture programs
+- One Village One Dam initiative resources
+- NGO agricultural technology projects
+
+## Case Studies: Success Stories in Ghana
+
+### Vegetable Farmers in Ada
+- Implemented low-cost drip systems with timer controls
+- Reduced water usage by 40%
+- Increased tomato yields by 30%
+
+### Women's Cooperative in Upper East
+- Shared solar pumping system serving 10 small farms
+- Mobile phone controlled irrigation scheduling
+- Diversified into dry season vegetable production
+
+By implementing appropriate smart irrigation technologies, small-scale farmers in Ghana can significantly improve water use efficiency, reduce labor requirements, and increase crop productivity even with limited resources.`
     },
+    {
+      id: '6',
+      title: 'Market Trends for Ghanaian Agricultural Products',
+      category: 'market',
+      summary: 'Analysis of current market trends and opportunities for various agricultural products in Ghana and export markets.',
+      content: `# Market Trends for Ghanaian Agricultural Products
+
+Understanding market trends is essential for making informed farming decisions. This guide provides insights into current and emerging markets for Ghanaian agricultural products.
+
+## Domestic Market Overview
+
+### Urban Consumer Trends
+
+1. **Growing Middle Class Demand**
+   - Increasing preference for quality and convenience
+   - Willingness to pay premium for food safety
+   - Rising demand for packaged and processed foods
+
+2. **Changing Dietary Patterns**
+   - Higher consumption of animal proteins
+   - Increased demand for fruits and vegetables
+   - Growing interest in organic and health foods
+
+### Institutional Markets
+
+1. **School Feeding Programs**
+   - Government purchases for national school feeding program
+   - Requirements: consistent supply, competitive pricing
+
+2. **Hotels and Restaurants**
+   - Growing tourism industry driving demand
+   - Premium on quality, consistency, and food safety
+   - Preference for reliable delivery schedules
+
+3. **Supermarkets and Retail Chains**
+   - Expanding presence in urban centers
+   - Formal contracting opportunities
+   - Strict quality and packaging standards
+
+## High-Potential Crops and Products
+
+### Traditional Export Crops
+
+1. **Cocoa**
+   - Premium for certified sustainable cocoa (Rainforest Alliance, Fair Trade)
+   - Growing market for single-origin and specialty cocoa
+   - Value addition through local processing
+
+2. **Shea Butter**
+   - Expanding cosmetic and food industry demand
+   - Price premiums for organic certification
+   - Direct marketing opportunities through cooperatives
+
+### Emerging Export Opportunities
+
+1. **Fresh Fruits and Vegetables**
+   - Pineapple, mango, papaya, Asian vegetables
+   - European market demand during winter months
+   - Middle Eastern markets expanding
+
+2. **Processed Foods**
+   - Dried fruits and vegetables
+   - Fruit juices and concentrates
+   - Cassava flour and derivatives
+
+3. **Specialty Products**
+   - Moringa powder and products
+   - Coconut oil and derivatives
+   - Honey and bee products
+
+## Market Access Strategies
+
+### Collective Marketing
+
+1. **Farmer-Based Organizations**
+   - Pooling produce to meet volume requirements
+   - Shared transportation and logistics
+   - Collective bargaining power
+
+2. **Aggregation Centers**
+   - Collection points in major farming areas
+   - Grading and sorting facilities
+   - Linkages to larger buyers
+
+### Digital Marketing Platforms
+
+1. **Mobile Trading Applications**
+   - Esoko, Farmerline, AgroCenta
+   - Direct connection to buyers
+   - Price information and market intelligence
+
+2. **Social Media Marketing**
+   - Facebook and WhatsApp business groups
+   - Direct consumer marketing for specialty products
+   - Building brand recognition
+
+## Value Addition Opportunities
+
+### Primary Processing
+
+1. **Cleaning and Grading**
+   - 10-15% price premium for properly sorted produce
+   - Reduced rejection rates
+   - Extended shelf life
+
+2. **Drying and Preservation**
+   - Solar drying technologies
+   - Vacuum packing
+   - Cold storage options
+
+### Secondary Processing
+
+1. **Small-Scale Processing Equipment**
+   - Fruit juice extraction
+   - Cassava processing (gari, flour)
+   - Oil extraction
+
+2. **Packaging Innovations**
+   - Biodegradable packaging options
+   - Branded packaging for recognition
+   - Appropriate sizes for target markets
+
+## Market Requirements and Standards
+
+### Food Safety Certification
+
+1. **Domestic Standards**
+   - Ghana Standards Authority requirements
+   - Food and Drugs Authority certification
+
+2. **Export Standards**
+   - Global G.A.P. certification
+   - HACCP implementation
+   - Organic certification options
+
+### Quality Specifications
+
+1. **Size and Appearance**
+   - Grading standards for different markets
+   - Consistency requirements
+
+2. **Packaging and Labeling**
+   - Traceability information
+   - Nutritional labeling
+   - Barcode requirements for formal retail
+
+## Pricing Trends and Seasonality
+
+### Price Information Sources
+
+1. **Market Information Services**
+   - Esoko market prices
+   - Ministry of Food and Agriculture reports
+   - Ghana Agricultural Market Information System
+
+2. **Seasonal Price Patterns**
+   - Historical price data for major commodities
+   - Optimal timing for sales
+   - Storage opportunities for price advantages
+
+## Export Market Navigation
+
+### Documentation Requirements
+
+1. **Essential Certificates**
+   - Phytosanitary certificates
+   - Certificate of origin
+   - Health certificates for animal products
+
+2. **Export Procedures**
+   - Ghana Export Promotion Authority registration
+   - Customs declaration process
+   - Inspection requirements
+
+### Logistics Considerations
+
+1. **Transportation Options**
+   - Air freight for high-value perishables
+   - Sea freight for non-perishables and bulk items
+   - Consolidated shipments for small volumes
+
+2. **Cold Chain Management**
+   - Available facilities in major cities
+   - Temperature monitoring requirements
+   - Packaging for temperature control
+
+## Financing and Payment Security
+
+1. **Payment Terms**
+   - Common arrangements (advance, partial, letter of credit)
+   - Mitigating non-payment risks
+
+2. **Trade Finance Options**
+   - Export financing programs
+   - Warehouse receipt systems
+   - Contract farming arrangements
+
+By understanding these market trends and requirements, Ghanaian farmers and agribusinesses can better position themselves to take advantage of emerging opportunities and secure better prices for their products.`
+    }
   ];
 
-  // Filter articles based on search term and category
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           article.summary.toLowerCase().includes(searchTerm.toLowerCase());
@@ -568,92 +854,120 @@ For market access assistance, contact your district agricultural marketing offic
 
   return (
     <Layout>
-      <div className="container mx-auto max-w-6xl px-4 py-8">
-        <h1 className="text-2xl font-bold text-primary mb-2">Agricultural Knowledge Base</h1>
-        <p className="text-gray-600 mb-6">
-          Access practical farming information tailored for Ghanaian agriculture.
-        </p>
-
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Sidebar with filters */}
-          <div className="w-full md:w-1/4">
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 sticky top-24">
-              <h2 className="text-lg font-semibold mb-4">Search & Filter</h2>
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-6 border-b border-gray-200 bg-primary text-white">
+            <h1 className="text-2xl font-bold">Knowledge Base</h1>
+            <p className="mt-2">Access farming guides, best practices, and research to improve your agricultural practices</p>
+          </div>
+          
+          {selectedArticle ? (
+            <div className="p-6">
+              <button 
+                onClick={() => setSelectedArticle(null)}
+                className="flex items-center text-primary hover:underline mb-6"
+              >
+                <FaArrowLeft className="mr-2" /> Back to articles
+              </button>
               
-              <div className="mb-4 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaSearch className="h-4 w-4 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search articles..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300 hover:shadow-sm"
-                />
-              </div>
-
-              <div className="mb-4">
-                <h3 className="text-md font-medium mb-2">Categories</h3>
-                <div className="space-y-2">
-                  {categories.map(category => (
-                    <div key={category.id} className="flex items-center">
-                      <button
-                        onClick={() => setSelectedCategory(category.id)}
-                        className={`w-full text-left px-2 py-1 rounded transition-all duration-300 transform hover:scale-105 ${selectedCategory === category.id ? 'bg-primary text-white shadow-sm' : 'hover:bg-gray-100'}`}
-                      >
-                        {category.name}
-                      </button>
-                    </div>
-                  ))}
-                </div>
+              <div className="prose prose-primary max-w-none">
+                <div dangerouslySetInnerHTML={{ 
+                  __html: selectedArticle.content
+                    .replace(/^# .+$/m, '')
+                    .split('\n')
+                    .map(line => {
+                      if (line.startsWith('## ')) {
+                        return `<h2>${line.substring(3)}</h2>`;
+                      } else if (line.startsWith('### ')) {
+                        return `<h3>${line.substring(4)}</h3>`;
+                      } else if (line.startsWith('- ')) {
+                        return `<li>${line.substring(2)}</li>`;
+                      } else if (line.match(/^\d+\.\s/)) {
+                        return `<li>${line.replace(/^\d+\.\s/, '')}</li>`;
+                      } else if (line === '') {
+                        return '<br/>';
+                      } else {
+                        return `<p>${line}</p>`;
+                      }
+                    }).join('')
+                }} />
               </div>
             </div>
-          </div>
-
-          {/* Main content area */}
-          <div className="w-full md:w-3/4">
-            {selectedArticle ? (
-              <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-                <button 
-                  onClick={() => setSelectedArticle(null)}
-                  className="mb-4 text-primary hover:underline flex items-center transition-all duration-300 transform hover:translate-x-[-5px]"
-                >
-                  <FaArrowLeft className="h-4 w-4 mr-1" />
-                  Back to articles
-                </button>
-                
-                <div className="prose prose-green max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: selectedArticle.content.replace(/\n/g, '<br>').replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mb-4">$1</h1>').replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-6 mb-3">$1</h2>').replace(/^### (.+)$/gm, '<h3 class="text-lg font-medium mt-4 mb-2">$1</h3>').replace(/^\d+\. \*\*(.+)\*\*: (.+)$/gm, '<div class="mb-2"><span class="font-semibold">$1:</span> $2</div>').replace(/^- \*\*(.+)\*\*: (.+)$/gm, '<div class="mb-2"><span class="font-semibold">$1:</span> $2</div>').replace(/^- (.+)$/gm, '<li>$1</li>').replace(/<li>(.+)<\/li>/g, (match, p1) => `<li class="ml-6">${p1}</li>') }} />
+          ) : (
+            <>
+              <div className="p-6 border-b border-gray-200 bg-gray-50">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="relative flex-grow">
+                    <input
+                      type="text"
+                      placeholder="Search articles..."
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                  </div>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="flex items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    >
+                      <FaFilter className="mr-2" />
+                      Filter
+                    </button>
+                    {showFilters && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 border border-gray-200">
+                        {categories.map(category => (
+                          <button
+                            key={category.id}
+                            onClick={() => {
+                              setSelectedCategory(category.id);
+                              setShowFilters(false);
+                            }}
+                            className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${selectedCategory === category.id ? 'bg-primary text-white hover:bg-primary-dark' : ''}`}
+                          >
+                            {category.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
+                {selectedCategory !== 'all' && (
+                  <div className="mt-4 flex items-center">
+                    <span className="text-sm text-gray-500 mr-2">Filtered by:</span>
+                    <span className="px-2 py-1 bg-primary text-white text-sm rounded-full flex items-center">
+                      {categories.find(c => c.id === selectedCategory)?.name}
+                      <button 
+                        onClick={() => setSelectedCategory('all')} 
+                        className="ml-2 focus:outline-none"
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  </div>
+                )}
               </div>
-            ) : (
-              <>
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold">
-                    {selectedCategory === 'all' ? 'All Articles' : categories.find(c => c.id === selectedCategory)?.name}
-                  </h2>
-                  <p className="text-gray-500">{filteredArticles.length} articles found</p>
-                </div>
-
+              
+              <div className="p-6">
                 {filteredArticles.length > 0 ? (
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredArticles.map(article => (
                       <div 
                         key={article.id} 
-                        className="bg-white rounded-lg shadow-md border border-gray-200 p-5 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] cursor-pointer"
+                        className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                         onClick={() => setSelectedArticle(article)}
                       >
-                        <h3 className="text-lg font-semibold mb-2 text-primary">{article.title}</h3>
-                        <div className="mb-3">
-                          <span className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                            {categories.find(c => c.id === article.category)?.name}
-                          </span>
+                        <div className="p-6">
+                          <div className="flex items-center mb-3">
+                            <span className={`px-2 py-1 text-xs rounded-full ${article.category === 'crops' ? 'bg-green-100 text-green-800' : article.category === 'livestock' ? 'bg-blue-100 text-blue-800' : article.category === 'weather' ? 'bg-yellow-100 text-yellow-800' : article.category === 'tech' ? 'bg-purple-100 text-purple-800' : 'bg-red-100 text-red-800'}`}>
+                              {categories.find(c => c.id === article.category)?.name}
+                            </span>
+                          </div>
+                          <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
+                          <p className="text-gray-600 text-sm">{article.summary}</p>
+                          <div className="mt-4 text-primary hover:underline text-sm font-medium">Read more</div>
                         </div>
-                        <p className="text-gray-600">{article.summary}</p>
-                        <button className="mt-3 text-primary hover:underline text-sm font-medium group transition-all duration-300">
-                          Read more <span className="group-hover:translate-x-1 inline-block transition-transform duration-300">→</span>
-                        </button>
                       </div>
                     ))}
                   </div>
@@ -671,9 +985,9 @@ For market access assistance, contact your district agricultural marketing offic
                     </button>
                   </div>
                 )}
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </Layout>

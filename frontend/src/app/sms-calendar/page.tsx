@@ -59,6 +59,9 @@ export default function SmsCalendar() {
     },
   ];
 
+  // This function would be used in production with a real backend
+  // Currently using handleDemoSubmit for the demo version
+  /*
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -91,33 +94,41 @@ export default function SmsCalendar() {
       setSelectedCrop('');
       setPlantingDate('');
       setLocation('');
-    } catch (err: any) {
-      setError(err.message || 'An error occurred. Please try again.');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-
-  // For demo purposes, simulate API response
+  */
+  
+  // Demo version of the submit handler
   const handleDemoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
     setError('');
-
-    // Validate form
-    if (!phone || !selectedCrop || !plantingDate || !location) {
-      setError('Please fill in all fields');
-      setLoading(false);
-      return;
-    }
-
+    
     // Simulate API delay
     setTimeout(() => {
+      if (!phone || !selectedCrop || !plantingDate || !location) {
+        setError('Please fill in all fields');
+        setLoading(false);
+        return;
+      }
+      
       setSuccess(true);
+      // Reset form
+      setPhone('');
+      setSelectedCrop('');
+      setPlantingDate('');
+      setLocation('');
       setLoading(false);
     }, 1500);
   };
+
+  // This function is already defined above, so we'll remove this duplicate
 
   const selectedCropDetails = crops.find(crop => crop.id === selectedCrop);
 
@@ -126,7 +137,7 @@ export default function SmsCalendar() {
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <h1 className="text-2xl font-bold text-primary mb-2">SMS Crop Calendar</h1>
         <p className="text-gray-600 mb-6">
-          Subscribe to receive SMS reminders for your crop's planting, watering, fertilizing, and harvesting schedule.
+          Subscribe to receive SMS reminders for your crop&apos;s planting, watering, fertilizing, and harvesting schedule.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -159,6 +170,7 @@ export default function SmsCalendar() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
                   required
                 />
+                <p className="text-sm text-gray-500 dark:text-gray-400">Don&apos;t worry, we&apos;ll only send you relevant updates about your crops.</p>
               </div>
 
               <div className="mb-4">
