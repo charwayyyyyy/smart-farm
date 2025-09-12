@@ -1,0 +1,21 @@
+{
+  "name": "smartfarmgh-sms-engine",
+  "version": "1.0.0",
+  "description": "SMS-based cropping calendar and reminder system for SmartFarmGH",
+  "main": "scheduler.js",
+  "scripts": {
+    "start": "node scheduler.js",
+    "dev": "nodemon scheduler.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "node-cron": "^3.0.3",
+    "sequelize": "^6.35.1",
+    "twilio": "^4.19.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2"
+  }
+}
