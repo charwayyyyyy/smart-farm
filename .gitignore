@@ -2,6 +2,10 @@
 node_modules/
 .pnp
 .pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
 
 # Testing
 coverage/
@@ -11,6 +15,8 @@ build/
 dist/
 out/
 .next/
+.vercel
+.turbo
 
 # Environment variables
 .env
@@ -42,6 +48,18 @@ Thumbs.db
 # Package managers
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
-# Local Netlify folder
+# Local deployment folders
 .netlify
+
+# Debug
+.debug
+
+# Cache
+.cache/
+.temp/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

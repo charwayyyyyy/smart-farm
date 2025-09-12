@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
+import { FaSearch, FaArrowLeft } from 'react-icons/fa';
 
 type Article = {
   id: string;
@@ -579,13 +580,16 @@ For market access assistance, contact your district agricultural marketing offic
             <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 sticky top-24">
               <h2 className="text-lg font-semibold mb-4">Search & Filter</h2>
               
-              <div className="mb-4">
+              <div className="mb-4 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaSearch className="h-4 w-4 text-gray-400" />
+                </div>
                 <input
                   type="text"
                   placeholder="Search articles..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300 hover:shadow-sm"
                 />
               </div>
 
@@ -596,7 +600,7 @@ For market access assistance, contact your district agricultural marketing offic
                     <div key={category.id} className="flex items-center">
                       <button
                         onClick={() => setSelectedCategory(category.id)}
-                        className={`w-full text-left px-2 py-1 rounded ${selectedCategory === category.id ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                        className={`w-full text-left px-2 py-1 rounded transition-all duration-300 transform hover:scale-105 ${selectedCategory === category.id ? 'bg-primary text-white shadow-sm' : 'hover:bg-gray-100'}`}
                       >
                         {category.name}
                       </button>
@@ -613,11 +617,9 @@ For market access assistance, contact your district agricultural marketing offic
               <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
                 <button 
                   onClick={() => setSelectedArticle(null)}
-                  className="mb-4 text-primary hover:underline flex items-center"
+                  className="mb-4 text-primary hover:underline flex items-center transition-all duration-300 transform hover:translate-x-[-5px]"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <FaArrowLeft className="h-4 w-4 mr-1" />
                   Back to articles
                 </button>
                 
@@ -639,7 +641,7 @@ For market access assistance, contact your district agricultural marketing offic
                     {filteredArticles.map(article => (
                       <div 
                         key={article.id} 
-                        className="bg-white rounded-lg shadow-md border border-gray-200 p-5 hover:shadow-lg transition-shadow cursor-pointer"
+                        className="bg-white rounded-lg shadow-md border border-gray-200 p-5 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] cursor-pointer"
                         onClick={() => setSelectedArticle(article)}
                       >
                         <h3 className="text-lg font-semibold mb-2 text-primary">{article.title}</h3>
@@ -649,7 +651,9 @@ For market access assistance, contact your district agricultural marketing offic
                           </span>
                         </div>
                         <p className="text-gray-600">{article.summary}</p>
-                        <button className="mt-3 text-primary hover:underline text-sm font-medium">Read more →</button>
+                        <button className="mt-3 text-primary hover:underline text-sm font-medium group transition-all duration-300">
+                          Read more <span className="group-hover:translate-x-1 inline-block transition-transform duration-300">→</span>
+                        </button>
                       </div>
                     ))}
                   </div>

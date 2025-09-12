@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Layout from '@/components/Layout';
+import { FaPaperPlane, FaRobot, FaUser, FaSpinner, FaLeaf } from 'react-icons/fa';
 
 type Message = {
   id: string;
@@ -143,9 +144,12 @@ export default function Chatbot() {
   return (
     <Layout>
       <div className="container mx-auto max-w-4xl px-4 py-8">
-        <h1 className="text-2xl font-bold text-primary mb-6">SmartFarmGH AI Assistant</h1>
+        <h1 className="text-2xl font-bold text-primary mb-6 flex items-center">
+          <FaRobot className="mr-2 text-accent" />
+          <span>SmartFarmGH AI Assistant</span>
+        </h1>
         
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 h-[60vh] flex flex-col">
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 h-[60vh] flex flex-col transition-all duration-300 hover:shadow-lg">
           <div className="flex-1 overflow-y-auto p-4">
             {messages.map((message) => (
               <div
@@ -153,9 +157,13 @@ export default function Chatbot() {
                 className={`mb-4 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}
               >
                 <div
-                  className={`inline-block rounded-lg px-4 py-2 max-w-[80%] ${message.sender === 'user' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-800'}`}
+                  className={`inline-block rounded-lg px-4 py-2 max-w-[80%] ${message.sender === 'user' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-800'} animate-fadeIn shadow-sm transition-all duration-300 hover:shadow-md`}
                 >
-                  <p>{message.text}</p>
+                  <div className="flex items-start">
+                    {message.sender === 'bot' && <FaLeaf className="mr-2 mt-1 text-accent flex-shrink-0" />}
+                    <p>{message.text}</p>
+                    {message.sender === 'user' && <FaUser className="ml-2 mt-1 text-white flex-shrink-0" />}
+                  </div>
                 </div>
                 {message.sources && message.sources.length > 0 && (
                   <div className="mt-2 text-left text-xs text-gray-500">
@@ -174,23 +182,28 @@ export default function Chatbot() {
           
           <div className="border-t border-gray-200 p-4">
             <form onSubmit={handleDemoSubmit} className="flex">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about farming in Ghana..."
-                className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                disabled={loading}
-              />
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask about farming in Ghana..."
+                  className="w-full border border-gray-300 rounded-l-lg pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300"
+                  disabled={loading}
+                />
+              </div>
               <button
                 type="submit"
-                className="btn-primary rounded-r-lg px-4 py-2 disabled:opacity-50"
+                className="btn-primary rounded-r-lg px-4 py-2 disabled:opacity-50 transition-all duration-300 hover:shadow-md flex items-center justify-center min-w-[80px]"
                 disabled={loading}
               >
                 {loading ? (
-                  <span>...</span>
+                  <FaSpinner className="animate-spin" />
                 ) : (
-                  <span>Send</span>
+                  <>
+                    <span className="mr-1">Send</span>
+                    <FaPaperPlane className="text-sm transition-transform duration-300 group-hover:translate-x-1" />
+                  </>
                 )}
               </button>
             </form>

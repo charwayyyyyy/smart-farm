@@ -3,11 +3,28 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
+import { FaUser, FaLock, FaUserCircle } from 'react-icons/fa';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // Demo login credentials
+  const demoUsers = [
+    { role: 'Farmer', email: 'farmer@demo.com', password: 'password123' },
+    { role: 'Extension Officer', email: 'officer@demo.com', password: 'password123' },
+    { role: 'Admin', email: 'admin@demo.com', password: 'password123' }
+  ];
+  
+  const handleDemoLogin = (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    // Auto-submit after a short delay
+    setTimeout(() => {
+      handleSubmit(new Event('click') as any);
+    }, 500);
+  };
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,7 +81,10 @@ export default function Login() {
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
               </label>
-              <div className="mt-2">
+              <div className="mt-2 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaUser className="h-4 w-4 text-gray-400" />
+                </div>
                 <input
                   id="email"
                   name="email"
@@ -73,7 +93,7 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                  className="block w-full pl-10 pr-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 rounded-md placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-300"
                 />
               </div>
             </div>
@@ -89,7 +109,10 @@ export default function Login() {
                   </Link>
                 </div>
               </div>
-              <div className="mt-2">
+              <div className="mt-2 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaLock className="h-4 w-4 text-gray-400" />
+                </div>
                 <input
                   id="password"
                   name="password"
@@ -98,7 +121,7 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                  className="block w-full pl-10 pr-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 rounded-md placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-300"
                 />
               </div>
             </div>
@@ -107,10 +130,27 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-70"
+                className="btn-primary flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-70 transition-all duration-300 hover:shadow-md hover:scale-[1.02]"
               >
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>
+            </div>
+            
+            <div className="mt-6">
+              <p className="text-sm text-center font-medium text-gray-700 mb-3">Demo Accounts</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {demoUsers.map((user) => (
+                  <button
+                    key={user.role}
+                    type="button"
+                    onClick={() => handleDemoLogin(user.email, user.password)}
+                    className="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-all duration-300 hover:shadow-sm"
+                  >
+                    <FaUserCircle className="mr-1" />
+                    {user.role}
+                  </button>
+                ))}
+              </div>
             </div>
           </form>
 

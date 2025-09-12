@@ -16,6 +16,13 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "SmartFarmGH - Intelligent Farming Solutions for Ghana",
   description: "AI-powered farming assistant and knowledge platform for Ghanaian farmers",
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  themeColor: "#2e7d32",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
