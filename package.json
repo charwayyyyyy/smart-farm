@@ -1,16 +1,17 @@
 {
   "name": "smartfarmgh",
+  "private": true,
   "version": "1.0.0",
   "description": "AI-Powered Farmer Education Platform with Chatbot and SMS Reminders",
   "main": "index.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "nodemon backend/server.js",
-    "dev:frontend": "cd frontend && npm run dev",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../chatbot && npm install && cd ../sms-engine && npm install",
-    "build": "cd frontend && npm run build",
-    "test": "jest"
+    "start": "npm run start --workspace=@smartfarmgh/backend",
+    "dev": "concurrently \"npm run dev --workspace=@smartfarmgh/backend\" \"npm run dev --workspace=@smartfarmgh/frontend\" \"npm run dev --workspace=@smartfarmgh/chatbot\" \"npm run dev --workspace=@smartfarmgh/sms-engine\"",
+    "build": "npm run build --workspace=@smartfarmgh/frontend",
+    "test": "npm test --workspaces"
   },
   "keywords": [
     "agriculture",

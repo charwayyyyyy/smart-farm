@@ -37,7 +37,7 @@ SmartFarmGH is a comprehensive platform designed to empower Ghanaian farmers wit
 - JWT authentication
 
 ### Database
-- MongoDB for data storage
+- PostgreSQL for data storage
 - Pinecone for vector embeddings (AI features)
 
 ### AI Services
@@ -52,63 +52,35 @@ SmartFarmGH is a comprehensive platform designed to empower Ghanaian farmers wit
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- npm or yarn
-- MongoDB connection
+- Node.js (v18+)
+- PostgreSQL
+- API keys for OpenAI and Twilio
 
 ### Installation
 
 1. Clone the repository
-   ```
+   ```bash
    git clone https://github.com/yourusername/smart-farm.git
    cd smart-farm
    ```
 
-2. Install dependencies for both frontend and backend
-   ```
-   # Install frontend dependencies
-   cd frontend
+2. Install dependencies for each module
+   ```bash
+   # Install dependencies for all workspaces
    npm install
-   cd ..
-
-   # Install backend dependencies
-   cd backend
-   npm install
-   cd ..
    ```
 
 3. Set up environment variables
-   - Create a `.env` file in the backend directory based on `.env.example`
+   - Create `.env` files in the `backend`, `chatbot`, and `sms-engine` directories based on the provided examples
    - Add your API keys and database connection strings
 
-### Running the Application
+4. Run the development servers
+   ```bash
+   # Start all services
+   npm run dev
+   ```
 
-#### Option 1: Using the start script (Windows)
-
-Run both frontend and backend servers with a single command:
-
-```
-./start-servers.ps1
-```
-
-#### Option 2: Manual startup
-
-Start the backend server:
-```
-cd backend
-npm run dev
-```
-
-Start the frontend server (in a new terminal):
-```
-cd frontend
-npm run dev
-```
-
-### Accessing the Application
-
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
+5. Access the application at `http://localhost:3000`
 
 ## Demo Accounts
 
@@ -140,7 +112,6 @@ smart-farm/
 │   └── utils/          # Helper functions
 ├── chatbot/            # AI chatbot implementation
 ├── sms-engine/         # SMS calendar and reminder system
-└── docs/               # Documentation
 ```
 
 ## API Endpoints
@@ -159,50 +130,6 @@ smart-farm/
 ### Knowledge Base
 - `GET /api/knowledge/articles` - Get all knowledge base articles
 - `GET /api/knowledge/articles/:id` - Get a specific article
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18+)
-- PostgreSQL
-- API keys for OpenAI and Twilio
-
-### Installation
-
-1. Clone the repository
-   ```bash
-   git clone https://github.com/yourusername/smart-farm.git
-   cd smart-farm
-   ```
-
-2. Install dependencies for each module
-   ```bash
-   # Install frontend dependencies
-   cd frontend
-   npm install
-   
-   # Install backend dependencies
-   cd ../backend
-   npm install
-   ```
-
-3. Set up environment variables
-   - Create `.env` files in the backend and frontend directories based on the provided examples
-   - Add your API keys and database connection strings
-
-4. Run the development servers
-   ```bash
-   # Start backend server
-   cd backend
-   npm run dev
-   
-   # Start frontend server in a new terminal
-   cd frontend
-   npm run dev
-   ```
-
-5. Access the application at `http://localhost:3000`
 
 ## Contributing
 

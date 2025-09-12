@@ -1,5 +1,5 @@
 {
-  "name": "smartfarmgh-chatbot",
+  "name": "@smartfarmgh/chatbot",
   "version": "1.0.0",
   "description": "AI-powered chatbot for SmartFarmGH platform",
   "main": "index.js",

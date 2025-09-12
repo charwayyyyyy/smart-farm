@@ -1,5 +1,5 @@
 {
-  "name": "smartfarmgh-sms-engine",
+  "name": "@smartfarmgh/sms-engine",
   "version": "1.0.0",
   "description": "SMS-based cropping calendar and reminder system for SmartFarmGH",
   "main": "scheduler.js",

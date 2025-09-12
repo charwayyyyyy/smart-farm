@@ -1,5 +1,5 @@
 {
-  "name": "smartfarmgh-backend",
+  "name": "@smartfarmgh/backend",
   "version": "1.0.0",
   "description": "Backend server for SmartFarmGH platform",
   "main": "server.js",
