@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      # Add other environment variables as needed
+      # - DATABASE_URL=postgres://user:password@db:5432/dbname
+      # - JWT_SECRET=your_jwt_secret
+    restart: unless-stopped
+    # Uncomment if you need a database
+    # depends_on:
+    #   - db
+
+  # Uncomment if you need a database
+  # db:
+  #   image: postgres:15-alpine
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   environment:
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_DB=smartfarm
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+
+# Uncomment if you need a database
+# volumes:
+#   postgres_data:

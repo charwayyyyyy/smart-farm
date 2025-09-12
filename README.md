@@ -48,176 +48,56 @@ SmartFarmGH is a comprehensive platform designed to empower Ghanaian farmers wit
 ### SMS Gateway
 - Twilio for SMS delivery and management
 
-## Getting Started
+## Docker Setup
+
+The application is containerized using Docker for easy deployment and consistent environments.
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- npm or yarn
-- MongoDB connection
+- Docker and Docker Compose installed on your system
+- Git for cloning the repository
 
-### Installation
+### Running with Docker Compose
 
-1. Clone the repository
-   ```
-   git clone https://github.com/yourusername/smart-farm.git
-   cd smart-farm
-   ```
-
-2. Install dependencies for both frontend and backend
-   ```
-   # Install frontend dependencies
-   cd frontend
-   npm install
-   cd ..
-
-   # Install backend dependencies
-   cd backend
-   npm install
-   cd ..
-   ```
-
-3. Set up environment variables
-   - Create a `.env` file in the backend directory based on `.env.example`
-   - Add your API keys and database connection strings
-
-### Running the Application
-
-#### Option 1: Using the start script (Windows)
-
-Run both frontend and backend servers with a single command:
-
-```
-./start-servers.ps1
-```
-
-#### Option 2: Manual startup
-
-Start the backend server:
-```
-cd backend
-npm run dev
-```
-
-Start the frontend server (in a new terminal):
-```
-cd frontend
-npm run dev
-```
-
-### Accessing the Application
-
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
-
-## Demo Accounts
-
-The application includes demo accounts for testing different user roles:
-
-- **Admin**: admin@smartfarmgh.com / password123
-- **Farmer**: farmer@smartfarmgh.com / password123
-- **Expert**: expert@smartfarmgh.com / password123
-- **Supplier**: supplier@smartfarmgh.com / password123
-
-### Deployment
-- Docker containerization
-- AWS/DigitalOcean hosting
-
-## Project Structure
-
-```
-smart-farm/
-├── frontend/           # Next.js web application
-│   ├── public/         # Static assets
-│   └── src/            # Source code
-│       ├── app/        # Next.js app router
-│       ├── components/ # React components
-│       └── styles/     # CSS styles
-├── backend/            # Express API server
-│   ├── api/            # API routes
-│   ├── services/       # Business logic
-│   ├── models/         # Database models
-│   └── utils/          # Helper functions
-├── chatbot/            # AI chatbot implementation
-├── sms-engine/         # SMS calendar and reminder system
-└── docs/               # Documentation
-```
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login a user
-
-### Chatbot
-- `POST /api/chatbot/message` - Send a message to the AI assistant
-
-### SMS Calendar
-- `POST /api/sms/subscribe` - Subscribe to SMS reminders
-- `GET /api/sms/schedule/:userId` - Get a user's reminder schedule
-
-### Knowledge Base
-- `GET /api/knowledge/articles` - Get all knowledge base articles
-- `GET /api/knowledge/articles/:id` - Get a specific article
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18+)
-- PostgreSQL
-- API keys for OpenAI and Twilio
-
-### Installation
-
-1. Clone the repository
+1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/smart-farm.git
    cd smart-farm
    ```
 
-2. Install dependencies for each module
+2. Start the application:
    ```bash
-   # Install frontend dependencies
-   cd frontend
-   npm install
-   
-   # Install backend dependencies
-   cd ../backend
-   npm install
+   docker-compose up -d
    ```
 
-3. Set up environment variables
-   - Create `.env` files in the backend and frontend directories based on the provided examples
-   - Add your API keys and database connection strings
+3. Access the application:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
 
-4. Run the development servers
+4. Stop the application:
    ```bash
-   # Start backend server
-   cd backend
-   npm run dev
-   
-   # Start frontend server in a new terminal
-   cd frontend
-   npm run dev
+   docker-compose down
    ```
 
-5. Access the application at `http://localhost:3000`
+### Docker Container Structure
 
-## Contributing
+- **Frontend Container**: Next.js application running on Node.js
+- **Backend Container**: Express API server
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Environment Variables
 
-## License
+Create `.env` files in both frontend and backend directories with appropriate values before building the Docker images.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+#### Backend Environment Variables
+```
+PORT=5000
+NODE_ENV=production
+JWT_SECRET=your_jwt_secret
+# Add other required environment variables
+```
 
-## Acknowledgments
-
-- Ministry of Food and Agriculture, Ghana
-- Local agricultural extension officers
-- Ghanaian farming communities
+#### Frontend Environment Variables
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000
+# Add other required environment variables
+```
