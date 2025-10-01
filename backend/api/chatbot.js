@@ -5,10 +5,67 @@ const { PineconeClient } = require('@pinecone-database/pinecone');
 const { authenticateToken } = require('../utils/auth');
 const KnowledgeArticle = require('../models/KnowledgeArticle');
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// Initialize OpenAI client or mock
+let openai;
+try {
+  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-test-key-for-development') {
+    console.log('Using mock OpenAI client for development');
+    // Mock OpenAI client
+    openai = {
+      embeddings: {
+        create: async () => ({ 
+          data: [{ embedding: Array(1536).fill(0).map(() => Math.random()) }] 
+        })
+      },
+      chat: {
+        completions: {
+          create: async ({ messages }) => ({
+            choices: [{ 
+              message: { 
+                content: `Mock response for: ${messages[messages.length-1].content}` 
+              } 
+            }]
+          })
+        }
+      },
+      audio: {
+        transcriptions: {
+          create: async () => ({ text: "Mock transcription of audio file" })
+        }
+      }
+    };
+  } else {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+  }
+} catch (error) {
+  console.error('Error initializing OpenAI:', error);
+  // Fallback to mock
+  openai = {
+    embeddings: {
+      create: async () => ({ 
+        data: [{ embedding: Array(1536).fill(0).map(() => Math.random()) }] 
+      })
+    },
+    chat: {
+      completions: {
+        create: async ({ messages }) => ({
+          choices: [{ 
+            message: { 
+              content: `Mock response for: ${messages[messages.length-1].content}` 
+            } 
+          }]
+        })
+      }
+    },
+    audio: {
+      transcriptions: {
+        create: async () => ({ text: "Mock transcription of audio file" })
+      }
+    }
+  };
+}
 
 // Initialize Pinecone client
 let pineconeIndex;

@@ -99,5 +99,82 @@ JWT_SECRET=your_jwt_secret
 #### Frontend Environment Variables
 ```
 NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+## Development Setup
+
+### Prerequisites
+- Node.js v18 or higher
+- npm v9 or higher
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/smart-farm.git
+   cd smart-farm
+   ```
+
+2. Install dependencies for all services:
+   ```bash
+   npm run install:all
+   ```
+
+3. Set up environment variables:
+   - Create `.env` file in the backend directory with:
+     ```
+     PORT=5000
+     JWT_SECRET=test_jwt_secret_for_development
+     OPENAI_API_KEY=sk-test-key-for-development
+     TWILIO_ACCOUNT_SID=test_sid_for_development
+     TWILIO_AUTH_TOKEN=test_token_for_development
+     WEATHER_API_KEY=test_weather_api_key
+     DISEASE_DETECTION_API_KEY=test_disease_detection_key
+     PINECONE_API_KEY=test_pinecone_key
+     PINECONE_ENVIRONMENT=test_environment
+     PINECONE_INDEX=smartfarmgh-index
+     ```
+
+4. Start the development servers:
+   ```bash
+   npm run dev
+   ```
+
+5. Access the application:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
+
+## Enhanced Features
+
+### Voice Assistant
+- Voice recording and transcription
+- Multi-language support (English, Twi, Hausa, Ewe)
+- Text-to-speech responses
+
+### Disease Detection
+- Upload crop images for disease identification
+- AI-powered analysis with confidence scores
+- Treatment and prevention recommendations
+
+### Gamified Knowledge Base
+- Interactive quizzes on farming topics
+- Achievement badges for learning progress
+- Leaderboard for community engagement
+
+### Personalized Dashboard
+- Customizable widgets for weather, market prices, and crop status
+- Data visualization for farm performance
+- Quick access to frequently used tools
+
+### Community Forum
+- Farmer-to-farmer knowledge sharing
+- Expert advice from agricultural specialists
+- Regional farming discussions
+
+### Weather-Based Smart Alerts
+- Localized weather forecasts
+- Extreme weather warnings
+- Farming recommendations based on weather conditions
+NEXT_PUBLIC_API_URL=http://localhost:5000
 # Add other required environment variables
 ```

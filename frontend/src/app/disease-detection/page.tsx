@@ -81,13 +81,37 @@ export default function DiseaseDetectionPage() {
     setError(null);
 
     try {
-      // In production, this would call the actual API
-      // For demo purposes, we'll simulate a response
+      // Create form data for API request
+      const formData = new FormData();
+      formData.append('image', image);
+      formData.append('crop', selectedCrop);
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the backend API
+      const response = await fetch('/api/disease-detection/detect', {
+        method: 'POST',
+        body: formData,
+      });
       
-      // Mock detection result
+      if (!response.ok) {
+        throw new Error('Failed to detect disease');
+      }
+      
+      const result = await response.json();
+      
+      // If API call fails, use fallback mock data
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to detect disease');
+      }
+      
+      // Set the result with the image preview URL
+      setDetectionResult({
+        ...result,
+        imageUrl: previewUrl // Use the local preview URL instead of server URL
+      });
+    } catch (err) {
+      console.error('Error detecting disease:', err);
+      
+      // Fallback to mock data for demo purposes
       const mockResult = {
         success: true,
         imageUrl: previewUrl,
@@ -114,9 +138,7 @@ export default function DiseaseDetectionPage() {
       };
       
       setDetectionResult(mockResult);
-    } catch (err) {
-      console.error('Error detecting disease:', err);
-      setError('Failed to process image. Please try again.');
+      setError('Using mock data: API connection failed');
     } finally {
       setIsLoading(false);
     }

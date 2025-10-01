@@ -9,6 +9,8 @@ const authRoutes = require('./api/auth');
 const chatbotRoutes = require('./api/chatbot');
 const smsRoutes = require('./api/sms');
 const knowledgeRoutes = require('./api/knowledge');
+const voiceRoutes = require('./routes/voice-routes');
+const chatRoutes = require('./routes/chat-routes');
 
 // Initialize express app
 const app = express();
@@ -25,6 +27,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/sms', smsRoutes);
 app.use('/api/knowledge', knowledgeRoutes);
+app.use('/api/voice', voiceRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

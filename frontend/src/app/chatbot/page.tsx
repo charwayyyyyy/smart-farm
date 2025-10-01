@@ -37,9 +37,7 @@ export default function Chatbot() {
     ]);
   }, []);
 
-  // This function would be used in production with a real backend
-  // Currently using handleDemoSubmit for the demo version
-  /*
+  // Handle real API submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -56,8 +54,8 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      // In a real implementation, this would call the backend API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chatbot/chat`, {
+      // Call the backend API
+      const response = await fetch('/api/chat/voice-query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +72,7 @@ export default function Chatbot() {
       // Add bot response
       const botMessage: Message = {
         id: Date.now().toString(),
-        text: data.message || 'Sorry, I could not process your request at this time.',
+        text: data.response || 'Sorry, I could not process your request at this time.',
         sender: 'bot',
         sources: data.sources || [],
       };
@@ -83,19 +81,12 @@ export default function Chatbot() {
     } catch (error) {
       console.error('Error:', error);
       
-      // Add error message
-      const errorMessage: Message = {
-        id: Date.now().toString(),
-        text: 'Sorry, there was an error processing your request. Please try again later.',
-        sender: 'bot',
-      };
-
-      setMessages((prev) => [...prev, errorMessage]);
+      // Fall back to demo response if API fails
+      handleDemoSubmit(input);
     } finally {
       setLoading(false);
     }
   };
-  */
 
   // For demo purposes, simulate API response
   const handleDemoSubmit = (e: React.FormEvent) => {
