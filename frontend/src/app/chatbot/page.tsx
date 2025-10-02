@@ -82,7 +82,11 @@ export default function Chatbot() {
       console.error('Error:', error);
       
       // Fall back to demo response if API fails
-      handleDemoSubmit(input);
+      // Create a mock event object to satisfy the type requirement
+      const mockEvent = { preventDefault: () => {} } as React.FormEvent;
+      handleDemoSubmit(mockEvent);
+      // Set the input value manually since we're using a mock event
+      setInput(input);
     } finally {
       setLoading(false);
     }

@@ -34,7 +34,7 @@ const Features = () => {
       link: '/community-forum'
     },
     {
-      title: 'Crop Disease Detection',
+      title: 'Plant Disease Detection',
       description: 'Upload images of your crops to identify diseases and get treatment recommendations instantly.',
       icon: (
         <svg className="w-6 h-6 text-primary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
