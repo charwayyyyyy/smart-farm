@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
+    "glob": "^11.0.3",
     "node-cron": "^3.0.3",
     "sequelize": "^6.35.1",
     "twilio": "^4.19.0"
