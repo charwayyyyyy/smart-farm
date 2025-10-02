@@ -5,10 +5,10 @@ const Hero = () => {
     <section className="soil-texture">
       <div className="grid max-w-screen-xl px-4 py-12 mx-auto lg:gap-8 xl:gap-0 lg:py-20 lg:grid-cols-12">
         <div className="mr-auto place-self-center lg:col-span-7">
-          <h1 className="max-w-2xl mb-4 text-3xl font-extrabold tracking-tight leading-none md:text-4xl lg:text-5xl xl:text-6xl text-earth-brown transition-all duration-300">
+          <h1 className="max-w-2xl mb-4 text-3xl font-extrabold tracking-tight leading-none md:text-4xl lg:text-5xl xl:text-6xl text-black dark:text-white shadow-sm transition-all duration-300">
             Smart Farming Solutions for Ghana
           </h1>
-          <p className="max-w-2xl mb-6 text-earth-green lg:mb-8 text-base md:text-lg lg:text-xl transition-all duration-300">
+          <p className="max-w-2xl mb-6 text-gray-800 dark:text-gray-200 font-medium lg:mb-8 text-base md:text-lg lg:text-xl transition-all duration-300">
             Access expert farming advice, personalized crop calendars, and agricultural knowledge through AI and SMS technology tailored for Ghanaian farmers.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
