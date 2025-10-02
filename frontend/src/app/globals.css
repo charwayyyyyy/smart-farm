@@ -10,6 +10,18 @@
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+/* Farm-themed background pattern */
+.farm-pattern {
+  background-color: #f8f9fa;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23208b3a' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Soil texture background */
+.soil-texture {
+  background-color: #f5f0e6;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23a67c52' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 20.83l2.83-2.83 1.41 1.41L1.41 22H0v-1.17zM0 3.07l2.83-2.83 1.41 1.41L1.41 4.24H0V3.07zm28.24 35.52l2.83-2.83 1.41 1.41L29.66 40h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41V3.07zM20 28.24l2.83-2.83 1.41 1.41L21.41 30H20v-1.76zm0-17.76l2.83-2.83 1.41 1.41L21.41 12H20v-1.52zm0-17.76L22.83 0l1.41 1.41-2.83 2.83H20V3.07zm-8.24 35.52l2.83-2.83 1.41 1.41L13.17 40h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41V3.07zM8.24 28.24l2.83-2.83 1.41 1.41L9.66 30H8.24v-1.76zm0-17.76l2.83-2.83 1.41 1.41L9.66 12H8.24v-1.52zm0-17.76L11.07 0l1.41 1.41-2.83 2.83H8.24V3.07zM0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 20.83l2.83-2.83 1.41 1.41L1.41 22H0v-1.17zM0 3.07l2.83-2.83 1.41 1.41L1.41 4.24H0V3.07zm28.24 35.52l2.83-2.83 1.41 1.41L29.66 40h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41V3.07zM20 28.24l2.83-2.83 1.41 1.41L21.41 30H20v-1.76zm0-17.76l2.83-2.83 1.41 1.41L21.41 12H20v-1.52zm0-17.76L22.83 0l1.41 1.41-2.83 2.83H20V3.07zm-8.24 35.52l2.83-2.83 1.41 1.41L13.17 40h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41v-1.41zm0-17.76l2.83-2.83 1.41 1.41-2.83 2.83h-1.41V3.07zM8.24 28.24l2.83-2.83 1.41 1.41L9.66 30H8.24v-1.76zm0-17.76l2.83-2.83 1.41 1.41L9.66 12H8.24v-1.52zm0-17.76L11.07 0l1.41 1.41-2.83 2.83H8.24V3.07z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 /* Mobile-first responsive design */
 @media (max-width: 640px) {
   html {
@@ -24,26 +36,31 @@
 }
 
 :root {
-  /* Primary colors */
-  --primary: #2e7d32; /* Green - representing agriculture */
-  --primary-light: #60ad5e;
-  --primary-dark: #005005;
+  /* Primary colors - Earthy farm tones */
+  --primary: #4b7f52; /* Rich green - representing lush crops */
+  --primary-light: #78a77e;
+  --primary-dark: #2c5a33;
   
   /* Secondary colors */
-  --secondary: #f9a825; /* Yellow/Gold - representing sun/harvest */
-  --secondary-light: #ffd95a;
-  --secondary-dark: #c17900;
+  --secondary: #e6b35a; /* Wheat/Harvest gold */
+  --secondary-light: #ffd78c;
+  --secondary-dark: #b38728;
   
   /* Accent colors */
   --accent: #d32f2f; /* Red - from Ghana flag */
   --accent-light: #ff6659;
   --accent-dark: #9a0007;
   
+  /* Earth tones */
+  --earth-brown: #8b5a2b;
+  --earth-tan: #d2b48c;
+  --earth-green: #556b2f;
+  
   /* Background and text colors */
-  --background: #ffffff;
-  --foreground: #212121;
-  --background-light: #f5f5f5;
-  --background-dark: #e0e0e0;
+  --background: #fffaf0; /* Soft cream background */
+  --foreground: #33302e; /* Dark earth tone for text */
+  --background-light: #f9f5eb;
+  --background-dark: #e8e0d0;
   
   /* Success, warning, error */
   --success: #43a047;

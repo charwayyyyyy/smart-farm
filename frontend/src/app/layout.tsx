@@ -35,9 +35,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${montserrat.variable} antialiased`}
+        className={`${inter.variable} ${montserrat.variable} antialiased soil-texture`}
       >
-        {children}
+        <div className="min-h-screen flex flex-col">
+          {children}
+        </div>
         <Analytics />
         <SpeedInsights />
       </body>
