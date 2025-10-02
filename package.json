@@ -25,9 +25,10 @@
   "license": "MIT",
   "dependencies": {
     "concurrently": "^8.2.2",
-    "dotenv": "^16.3.1",
     "cross-env": "^7.0.3",
-    "next": "15.5.3"
+    "dotenv": "^16.3.1",
+    "next": "15.5.3",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
