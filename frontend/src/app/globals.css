@@ -48,6 +48,11 @@
   
   /* Accent colors */
   --accent: #d32f2f; /* Red - from Ghana flag */
+  
+  /* Earth tones for text */
+  --earth-brown: #5d4037;
+  --earth-green: #33691e;
+  --earth-tan: #d7ccc8;
   --accent-light: #ff6659;
   --accent-dark: #9a0007;
   
