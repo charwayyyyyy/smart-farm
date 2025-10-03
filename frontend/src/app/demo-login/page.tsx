@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import { FaTractor, FaUserTie, FaUserCog } from 'react-icons/fa';
@@ -35,7 +34,7 @@ export default function DemoLogin() {
     }
   ];
   
-  const handleDemoLogin = (demoEmail: string, demoPassword: string) => {
+  const handleDemoLogin = (demoEmail: string) => {
     // In a real app, this would authenticate the user
     // For demo purposes, we'll just redirect to the dashboard
     localStorage.setItem('demoUser', demoEmail);
@@ -62,7 +61,7 @@ export default function DemoLogin() {
                   <p className="text-sm"><strong>Password:</strong> {user.password}</p>
                 </div>
                 <button
-                  onClick={() => handleDemoLogin(user.email, user.password)}
+                  onClick={() => handleDemoLogin(user.email)}
                   className="w-full btn-primary py-2 px-4 rounded-md flex items-center justify-center"
                 >
                   {user.icon}

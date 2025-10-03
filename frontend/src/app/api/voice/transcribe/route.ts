@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execPromise = promisify(exec);
+// Removed unused imports and variables
 
 // This function handles the POST request for audio transcription
 export async function POST(request: NextRequest) {

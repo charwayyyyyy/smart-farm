@@ -38,7 +38,8 @@ export default function Chatbot() {
   }, []);
 
   // Handle real API submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Using this function when API is available
+  const handleApiSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 

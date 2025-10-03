@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
-import { FaUser, FaLock, FaUserCircle, FaTractor, FaUserTie, FaUserCog } from 'react-icons/fa';
+import { FaUser, FaLock, FaTractor, FaUserTie, FaUserCog } from 'react-icons/fa';
 
 export default function Login() {
   const [email, setEmail] = useState('');
