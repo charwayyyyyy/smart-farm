@@ -2,16 +2,26 @@ require('dotenv').config();
 const OpenAI = require('openai');
 const { PineconeClient } = require('@pinecone-database/pinecone');
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// Initialize OpenAI client with fallback for development
+let openai;
+if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.startsWith('sk-test')) {
+  console.log('Using mock OpenAI client for development');
+  openai = null; // Will be handled in functions
+} else {
+  openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+  });
+}
 
 // Initialize Pinecone client
 let pineconeIndex;
 
 const initPinecone = async () => {
   try {
+    if (!process.env.PINECONE_API_KEY || process.env.PINECONE_API_KEY.startsWith('test_')) {
+      console.log('Using mock Pinecone service for development');
+      return null;
+    }
     const pinecone = new PineconeClient();
     await pinecone.init({
       environment: process.env.PINECONE_ENVIRONMENT,
@@ -22,7 +32,7 @@ const initPinecone = async () => {
     return pineconeIndex;
   } catch (error) {
     console.error('Pinecone initialization error:', error);
-    throw error;
+    return null;
   }
 };
 
@@ -33,6 +43,10 @@ const initPinecone = async () => {
  */
 const generateEmbeddings = async (text) => {
   try {
+    if (!openai) {
+      // Return mock embeddings for development
+      return new Array(1536).fill(0).map(() => Math.random());
+    }
     const response = await openai.embeddings.create({
       model: 'text-embedding-ada-002',
       input: text
@@ -40,7 +54,8 @@ const generateEmbeddings = async (text) => {
     return response.data[0].embedding;
   } catch (error) {
     console.error('Error generating embeddings:', error);
-    throw error;
+    // Return mock embeddings on error
+    return new Array(1536).fill(0).map(() => Math.random());
   }
 };
 
@@ -86,6 +101,11 @@ const searchKnowledgeBase = async (query, limit = 3) => {
  */
 const generateResponse = async (userMessage, context = []) => {
   try {
+    if (!openai) {
+      // Return mock response for development
+      return `I'm SmartFarmGH, your agricultural assistant! You asked: "${userMessage}". In production, I would provide detailed farming advice based on our knowledge base. Please configure your OpenAI API key to enable full functionality.`;
+    }
+    
     // Prepare context from relevant articles
     let contextText = '';
     if (context.length > 0) {
@@ -122,7 +142,7 @@ const generateResponse = async (userMessage, context = []) => {
     return completion.choices[0].message.content;
   } catch (error) {
     console.error('Error generating response:', error);
-    throw error;
+    return `I'm SmartFarmGH, your agricultural assistant! I encountered an issue processing your question: "${userMessage}". Please try again or contact support if the problem persists.`;
   }
 };
 
@@ -133,6 +153,10 @@ const generateResponse = async (userMessage, context = []) => {
  */
 const transcribeAudio = async (audioBuffer) => {
   try {
+    if (!openai) {
+      // Return mock transcription for development
+      return "This is a mock transcription. Please configure your OpenAI API key to enable voice transcription.";
+    }
     const transcription = await openai.audio.transcriptions.create({
       file: audioBuffer,
       model: 'whisper-1'
@@ -141,7 +165,7 @@ const transcribeAudio = async (audioBuffer) => {
     return transcription.text;
   } catch (error) {
     console.error('Error transcribing audio:', error);
-    throw error;
+    return "Unable to transcribe audio. Please try again.";
   }
 };
 

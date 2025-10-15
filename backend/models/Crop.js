@@ -29,26 +29,23 @@ const Crop = sequelize.define('Crop', {
   },
   fertilizingSchedule: {
     type: DataTypes.JSON,
-    allowNull: true,
-    defaultValue: {}
+    allowNull: true
   },
   pestControlSchedule: {
     type: DataTypes.JSON,
-    allowNull: true,
-    defaultValue: {}
+    allowNull: true
   },
   harvestingIndicators: {
     type: DataTypes.TEXT,
     allowNull: true
   },
   climateZones: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
+    type: DataTypes.JSON,
     allowNull: true
   },
   plantingSeasons: {
     type: DataTypes.JSON,
-    allowNull: true,
-    defaultValue: {}
+    allowNull: true
   },
   imageUrl: {
     type: DataTypes.STRING,

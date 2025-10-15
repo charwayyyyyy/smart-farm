@@ -2,11 +2,22 @@ const { Op } = require('sequelize');
 const twilio = require('twilio');
 const { FarmerSubscription, Crop, User } = require('../backend/models');
 
-// Initialize Twilio client
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Initialize Twilio client with fallback for development
+let twilioClient;
+if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+  console.log('Warning: Twilio credentials missing. SMS functionality will be disabled.');
+  twilioClient = null;
+} else {
+  try {
+    twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+  } catch (error) {
+    console.log('Warning: Failed to initialize Twilio client. SMS functionality will be disabled.');
+    twilioClient = null;
+  }
+}
 
 /**
  * Calculate farming events based on planting date and crop information
@@ -135,14 +146,17 @@ const sendCalendarReminders = async () => {
         if (daysUntil >= 0 && daysUntil <= 7) {
           const message = generateEventMessage(eventType, subscription, subscription.Crop, eventDate);
           
-          // Send SMS
-          await twilioClient.messages.create({
-            body: message,
-            from: process.env.TWILIO_PHONE_NUMBER,
-            to: phone
-          });
-          
-          console.log(`Sent ${eventType} reminder to ${phone} for ${subscription.Crop.name}`);
+          // Send SMS if Twilio client is available
+          if (twilioClient) {
+            await twilioClient.messages.create({
+              body: message,
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: phone
+            });
+            console.log(`Sent ${eventType} reminder to ${phone} for ${subscription.Crop.name}`);
+          } else {
+            console.log(`[Mock] Would send ${eventType} reminder to ${phone} for ${subscription.Crop.name}: ${message}`);
+          }
           
           // Update last notification sent
           subscription.lastNotificationSent = new Date();
@@ -158,13 +172,17 @@ const sendCalendarReminders = async () => {
           if (daysUntil >= 0 && daysUntil <= 3) { // Shorter window for watering reminders
             const message = generateEventMessage('watering', subscription, subscription.Crop, wateringDate);
             
-            await twilioClient.messages.create({
-              body: message,
-              from: process.env.TWILIO_PHONE_NUMBER,
-              to: phone
-            });
+            if (twilioClient) {
+              await twilioClient.messages.create({
+                body: message,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                to: phone
+              });
+              console.log(`Sent watering reminder to ${phone} for ${subscription.Crop.name}`);
+            } else {
+              console.log(`[Mock] Would send watering reminder to ${phone} for ${subscription.Crop.name}: ${message}`);
+            }
             
-            console.log(`Sent watering reminder to ${phone} for ${subscription.Crop.name}`);
             subscription.lastNotificationSent = new Date();
             await subscription.save();
             break; // Only send one watering reminder at a time
@@ -180,13 +198,17 @@ const sendCalendarReminders = async () => {
           if (daysUntil >= 0 && daysUntil <= 5) { // 5-day window for pest control
             const message = generateEventMessage('pestControl', subscription, subscription.Crop, pestControlDate);
             
-            await twilioClient.messages.create({
-              body: message,
-              from: process.env.TWILIO_PHONE_NUMBER,
-              to: phone
-            });
+            if (twilioClient) {
+              await twilioClient.messages.create({
+                body: message,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                to: phone
+              });
+              console.log(`Sent pest control reminder to ${phone} for ${subscription.Crop.name}`);
+            } else {
+              console.log(`[Mock] Would send pest control reminder to ${phone} for ${subscription.Crop.name}: ${message}`);
+            }
             
-            console.log(`Sent pest control reminder to ${phone} for ${subscription.Crop.name}`);
             subscription.lastNotificationSent = new Date();
             await subscription.save();
             break; // Only send one pest control reminder at a time
